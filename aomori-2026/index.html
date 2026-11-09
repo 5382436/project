@@ -30,6 +30,7 @@
     background: linear-gradient(180deg, #e9f2ef 0%, var(--bg) 220px);
     line-height: 1.65;
   }
+  body.modal-open { overflow: hidden; }
   a { color: var(--accent); }
   img { max-width: 100%; display: block; }
   .wrap { max-width: var(--max); margin: 0 auto; padding: 0 16px 64px; }
@@ -182,6 +183,29 @@
   }
   ol.steps .t { font-weight: 650; }
   ol.steps .d { color: var(--muted); font-size: .9rem; }
+  .spot-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  button.spot-btn {
+    appearance: none;
+    border: 1px solid var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-radius: 999px;
+    padding: 5px 11px;
+    font: inherit;
+    font-size: .82rem;
+    font-weight: 650;
+    cursor: pointer;
+    line-height: 1.3;
+  }
+  button.spot-btn:hover, button.spot-btn:focus-visible {
+    background: var(--accent);
+    color: #fff;
+    outline: none;
+  }
+  button.spot-btn::after {
+    content: " ›";
+    font-weight: 700;
+  }
   table.meals {
     width: 100%; border-collapse: collapse; font-size: .9rem;
   }
@@ -246,12 +270,106 @@
     border-radius: 999px; padding: 10px 14px;
     font: inherit; font-size: .85rem; cursor: pointer;
     box-shadow: var(--shadow); opacity: .92;
+    z-index: 20;
+  }
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(15,35,40,.48);
+    z-index: 40;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease;
+  }
+  .modal-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .spot-modal {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 50;
+    background: var(--card);
+    border-radius: 20px 20px 0 0;
+    max-height: min(88vh, 720px);
+    transform: translateY(110%);
+    transition: transform .25s ease;
+    box-shadow: 0 -12px 40px rgba(31,42,46,.18);
+    display: flex;
+    flex-direction: column;
+    outline: none;
+  }
+  .spot-modal.open { transform: translateY(0); }
+  .spot-modal .handle {
+    width: 42px; height: 4px; border-radius: 999px;
+    background: var(--line); margin: 10px auto 4px;
+  }
+  .spot-modal .modal-head {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 12px; padding: 4px 16px 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .spot-modal h3 {
+    margin: 0; font-size: 1.12rem; color: var(--accent); line-height: 1.35;
+  }
+  .spot-modal .close-btn {
+    flex: 0 0 auto;
+    width: 36px; height: 36px;
+    border: 0; border-radius: 50%;
+    background: #f0ebe4; color: var(--ink);
+    font-size: 1.2rem; line-height: 1; cursor: pointer;
+  }
+  .spot-modal .modal-body {
+    overflow-y: auto; padding: 14px 16px 28px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .spot-modal .modal-photo {
+    width: 100%; height: 200px; object-fit: cover;
+    border-radius: 12px; margin-bottom: 8px;
+    background: #eef3f1;
+  }
+  .spot-modal .no-photo {
+    height: 72px; display: flex; align-items: center; justify-content: center;
+    background: #f4f0ea; border-radius: 12px; color: var(--muted);
+    font-size: .88rem; margin-bottom: 10px;
+  }
+  .spot-modal .ticket {
+    display: inline-block;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: .88rem;
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin: 6px 0 12px;
+  }
+  .spot-modal ul {
+    margin: 0; padding-left: 18px;
+  }
+  .spot-modal li { margin-bottom: 8px; }
+  .spot-modal .modal-credit {
+    margin-top: 12px; font-size: .75rem; color: var(--muted);
   }
   @media (min-width: 640px) {
     .hero img { height: 340px; }
     .lodge { grid-template-columns: 160px 1fr; }
     .lodge img { width: 160px; height: 120px; }
     .gallery img { height: 170px; }
+    .spot-modal {
+      left: 50%; right: auto; bottom: auto; top: 50%;
+      width: min(520px, calc(100vw - 32px));
+      border-radius: 18px;
+      transform: translate(-50%, -46%) scale(.96);
+      opacity: 0;
+      max-height: min(80vh, 680px);
+      pointer-events: none;
+    }
+    .spot-modal.open {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .spot-modal .handle { display: none; }
+    .spot-modal .modal-photo { height: 240px; }
   }
 </style>
 </head>
@@ -288,7 +406,7 @@
       <div class="prop"><div class="k">出發</div><div class="v">出發前往桃園機場，目標約 08:00 到機場第二航廈</div></div>
     </div>
     <p style="margin:14px 0 0;color:var(--muted);font-size:.92rem">
-      時間除另註明外皆為日本當地時間。住宿都已訂好，標「建議訂位」的餐廳出發前再處理即可。參考圖取自 Wikimedia Commons，僅供旅伴辨識景點與飯店外觀。
+      時間除另註明外皆為日本當地時間。住宿都已訂好，標「建議訂位」的餐廳出發前再處理即可。每日行程中的景點名稱可點開，查看照片與重點介紹。參考圖取自 Wikimedia Commons。
     </p>
   </section>
 
@@ -333,7 +451,7 @@
 
   <section id="days">
     <h2>每日行程</h2>
-    <p class="cap">點選日期查看當日動線與參考圖</p>
+    <p class="cap">點選日期查看當日動線；景點按鈕可打開照片與重點介紹（餐廳不在此列）</p>
     <div class="day-tabs" role="tablist" aria-label="選擇日期" id="dayTabs"></div>
     <p class="day-meta" id="dayMeta"></p>
     <div class="gallery" id="dayGallery"></div>
@@ -448,27 +566,7 @@
   <section id="credits" class="credits">
     <h2>圖片來源</h2>
     <p class="cap">以下照片取自 Wikimedia Commons，依授權標示作者與授權條款。點連結可查看原圖頁面。</p>
-    <ul>
-<li><a href="https://commons.wikimedia.org/wiki/File%3AOirase_Gorge_-_OiraseGorge7015.jpg" target="_blank" rel="noopener">奧入瀨溪流</a> — lumoplank · CC0</li>
-<li><a href="https://commons.wikimedia.org/wiki/File%3AHotel_Route_Inn_Aomori_Ekimae.JPG" target="_blank" rel="noopener">露櫻酒店（Hotel Route Inn）青森站前店</a> — あばさー · Public domain</li>
-<li><a href="https://commons.wikimedia.org/wiki/File%3AOirase_Keiryu_Hotel_-_Oirase_Mountain_Stream_-_Towada%2C_Aomori_-_DSC00841.jpg" target="_blank" rel="noopener">星野リゾート 奥入瀬渓流ホテル</a> — Daderot · CC0</li>
-<li><a href="https://commons.wikimedia.org/wiki/File%3ADaiwa_Roynet_Hotel_Aomori_20200621.jpg" target="_blank" rel="noopener">青森大和 ROYNET 飯店</a> — 掬茶 · CC BY-SA 4.0</li>
-<li><a href="https://commons.wikimedia.org/wiki/File%3ANebuta_Museum_Wa_Rasse_20200621.jpg" target="_blank" rel="noopener">睡魔之家 WA・RASSE</a> — 掬茶 · CC BY-SA 4.0</li>
-<li><a href="https://commons.wikimedia.org/wiki/File%3A140913_Aomori_Museum_of_Art_Japan02bs3.jpg" target="_blank" rel="noopener">青森縣立美術館</a> — 663highland · CC BY 2.5</li>
-<li><a href="https://commons.wikimedia.org/wiki/File%3A140913_Sannai-Maruyama_site_Aomori_Japan01bs6bs6.jpg" target="_blank" rel="noopener">三內丸山遺跡</a> — 663highland · CC BY 2.5</li>
-<li><a href="https://commons.wikimedia.org/wiki/File%3AKumoi_Falls_-_Oirase_Mountain_Stream_-_Towada%2C_Aomori_-_DSC01198.jpg" target="_blank" rel="noopener">雲井之瀧（雲景瀑布）</a> — Daderot · CC0</li>
-<li><a href="https://commons.wikimedia.org/wiki/File%3A%E9%98%BF%E4%BF%AE%E7%BE%85%E3%81%AE%E6%B5%81%E3%82%8C.jpg" target="_blank" rel="noopener">阿修羅之流</a> — （作者未標示） · CC BY-SA 3.0</li>
-<li><a href="https://commons.wikimedia.org/wiki/File%3AOirase_Stream%2C_Towada-Hachimantai_National_Park%2C_Japan.jpg" target="_blank" rel="noopener">奧入瀨溪流散策</a> — OKJaguar · CC BY-SA 4.0</li>
-<li><a href="https://commons.wikimedia.org/wiki/File%3AFurukawa_market_%2C_%E5%8F%A4%E5%B7%9D%E5%B8%82%E5%A0%B4_%E9%9D%92%E6%A3%AE%E9%AD%9A%E8%8F%9C%E3%82%BB%E3%83%B3%E3%82%BF%E3%83%BC_-_Panoramio_107351554.jpg" target="_blank" rel="noopener">古川市場</a> — z tanuki · CC BY 3.0</li>
-<li><a href="https://commons.wikimedia.org/wiki/File%3AHakkoda_Maru_moored_at_the_port_of_Aomori_20200621a.jpg" target="_blank" rel="noopener">八甲田丸</a> — 掬茶 · CC BY-SA 4.0</li>
-<li><a href="https://commons.wikimedia.org/wiki/File%3AA-Factory_20200621.jpg" target="_blank" rel="noopener">A-FACTORY</a> — 掬茶 · CC BY-SA 4.0</li>
-<li><a href="https://commons.wikimedia.org/wiki/File%3AHakkoda_Ropeway_2019.jpg" target="_blank" rel="noopener">八甲田纜車</a> — Marho · CC BY-SA 4.0</li>
-<li><a href="https://commons.wikimedia.org/wiki/File%3AAsamushi_Aquarium-2.jpg" target="_blank" rel="noopener">淺虫水族館</a> — Drivephotographer · CC0</li>
-<li><a href="https://commons.wikimedia.org/wiki/File%3AHirosaki_castle_park_-_panoramio.jpg" target="_blank" rel="noopener">弘前公園</a> — （作者未標示） · CC BY-SA 3.0</li>
-<li><a href="https://commons.wikimedia.org/wiki/File%3AHirosaki_Saishoin_Pagoda.JPG" target="_blank" rel="noopener">最勝院五重塔</a> — （作者未標示） · CC BY-SA 3.0</li>
-<li><a href="https://commons.wikimedia.org/wiki/File%3AFujita_Memorial_Japanese_Garden_-_panoramio.jpg" target="_blank" rel="noopener">藤田記念庭園</a> — （作者未標示） · CC BY 3.0</li>
-<li><a href="https://commons.wikimedia.org/wiki/File%3AUtou-jinja04.jpg" target="_blank" rel="noopener">善知鳥神社</a> — Higa4 · CC0</li>
-    </ul>
+    <ul id="creditsList"></ul>
   </section>
 
   <footer>僅供旅伴參考 · 行程內容可能微調</footer>
@@ -476,7 +574,252 @@
 
 <button class="topbtn" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})">回到頂部</button>
 
+<div class="modal-backdrop" id="modalBackdrop" hidden></div>
+<div class="spot-modal" id="spotModal" role="dialog" aria-modal="true" aria-labelledby="spotModalTitle" hidden>
+  <div class="handle" aria-hidden="true"></div>
+  <div class="modal-head">
+    <h3 id="spotModalTitle"></h3>
+    <button type="button" class="close-btn" id="spotModalClose" aria-label="關閉">×</button>
+  </div>
+  <div class="modal-body" id="spotModalBody"></div>
+</div>
+
 <script>
+
+const spots = {
+  warasse: {
+    name: "睡魔之家 WA・RASSE",
+    ticket: "大人 ¥620",
+    points: [
+      "展示青森睡魔祭（ねぶた）大型花燈與祭典文化的博物館。",
+      "館內可近距離觀看巨型燈籠，也有太鼓體驗等互動內容。",
+      "9–4 月開館 9:00–18:00，最終入場 17:30；抵達日傍晚去剛好趕得上。",
+      "大人票 ¥620（官網現價）。"
+    ],
+    photo: { src: "img/day-1122-nebuta.jpg", alt: "睡魔之家 WA・RASSE", credit: "掬茶 · CC BY-SA 4.0", commons: "https://commons.wikimedia.org/wiki/File%3ANebuta_Museum_Wa_Rasse_20200621.jpg" }
+  },
+  museum: {
+    name: "青森縣立美術館",
+    ticket: "常設／コレクション 大人 ¥700",
+    points: [
+      "以奈良美智等青森相關藝術家作品聞名的大型美術館。",
+      "常設／コレクション展大人 ¥700；當日另有南希関特集與志賀理江子企画展可加購。",
+      "開館約 9:30–17:00；持當日門票半券可折三內丸山入場費。",
+      "可搭ねぶたん號往返（單次 ¥300／一日券 ¥800）。"
+    ],
+    photo: { src: "img/day-1123-museum.jpg", alt: "青森縣立美術館", credit: "663highland · CC BY 2.5", commons: "https://commons.wikimedia.org/wiki/File%3A140913_Aomori_Museum_of_Art_Japan02bs3.jpg" }
+  },
+  sannai: {
+    name: "三內丸山遺跡",
+    ticket: "一般 ¥500；持美術館票半券 ¥400",
+    points: [
+      "繩文時代大型聚落遺跡，屬世界遺產「北海道・北東北的繩文遺跡群」。",
+      "可看大型掘立柱建物復原與遺跡現場；館內展示出土文物。",
+      "一般大人 ¥500，持當日美術館票半券可折至 ¥400。",
+      "11/23 雖為第 4 週一，但適逢國定假日（勤勞感謝日），休館改至翌日。"
+    ],
+    photo: { src: "img/day-1123-sannai.jpg", alt: "三內丸山遺跡", credit: "663highland · CC BY 2.5", commons: "https://commons.wikimedia.org/wiki/File%3A140913_Sannai-Maruyama_site_Aomori_Japan01bs6bs6.jpg" }
+  },
+  kumoi: {
+    name: "雲井之瀧（雲景瀑布）",
+    ticket: "溪流散策免費（接駁僅限星野住客）",
+    points: [
+      "奧入瀨溪流代表性瀑布之一，落差明顯、水霧大。",
+      "11 月下旬步道潮濕易結冰，務必穿防水防滑鞋。",
+      "對外巴士冬季停駛，僅能搭星野住客專用溪流接駁（免費）。",
+      "建議由雲井之瀧往飯店／石ヶ戸方向沿溪走。"
+    ],
+    photo: { src: "img/day-1124-kumoi.jpg", alt: "雲井之瀧", credit: "Daderot · CC0", commons: "https://commons.wikimedia.org/wiki/File%3AKumoi_Falls_-_Oirase_Mountain_Stream_-_Towada%2C_Aomori_-_DSC01198.jpg" }
+  },
+  ashura: {
+    name: "阿修羅之流",
+    ticket: "溪流散策免費",
+    points: [
+      "奧入瀨溪流中水流湍急、白浪翻騰的著名河段。",
+      "沿溪木棧道與岩石步道相間，風景張力強、適合拍照。",
+      "11 月末地面濕滑，放慢腳步；可與石ヶ戸、三亂串成一日散策。",
+      "無需另購門票，重點是安排接駁與回程時間。"
+    ],
+    photo: { src: "img/day-1124-ashura.jpg", alt: "阿修羅之流", credit: "Wikimedia Commons · CC BY-SA 3.0", commons: "https://commons.wikimedia.org/wiki/File%3A%E9%98%BF%E4%BF%AE%E7%BE%85%E3%81%AE%E6%B5%81%E3%82%8C.jpg" }
+  },
+  sanran: {
+    name: "三亂之流",
+    ticket: "溪流散策免費",
+    points: [
+      "溪流分成三股再會合的景點，名稱即來源於此。",
+      "附近是星野住客溪流接駁的重要上下車點之一。",
+      "11 月末班回飯店約 15:42（對應飯店 15:00 發車那輪），務必卡時間。",
+      "Commons 上未找到可核實的專屬照片，故此處不放圖以免誤導。"
+    ],
+    photo: null
+  },
+  ishigedo: {
+    name: "石ヶ戸",
+    ticket: "散策免費；休憩所有餐飲",
+    points: [
+      "奧入瀨溪流中段的知名休息點，旁有石ヶ戸休憩所。",
+      "可在休憩所吃蕎麥麵／烏龍麵；店休或不想排隊時自備飯糰。",
+      "適合作為雲井之瀧往三亂之流之間的午餐與休息站。",
+      "11 月天氣冷，點熱食、備熱水很有感。"
+    ],
+    photo: { src: "img/spot-ishigedo.jpg", alt: "石ヶ戸（奧入瀨溪流）", credit: "Daderot · CC0", commons: "https://commons.wikimedia.org/wiki/File%3AIshigedo_-_Oirase_Mountain_Stream_-_Towada%2C_Aomori_-_DSC01009.jpg" }
+  },
+  hakkodamaru: {
+    name: "青函連絡船紀念船 八甲田丸",
+    ticket: "大人 ¥510",
+    points: [
+      "退役的青函連絡船，改為停泊於青森港的博物館船。",
+      "可參觀駕駛台、車輛甲板與船艙，了解鐵路渡輪歷史。",
+      "11–3 月開館約 9:00–17:00（最終入場約 16:30）；冬季週一休館。",
+      "大人票 ¥510；與 A-FACTORY、ASPAM 同在港灣區，方便串走。"
+    ],
+    photo: { src: "img/day-1125-hakkodamaru.jpg", alt: "八甲田丸", credit: "掬茶 · CC BY-SA 4.0", commons: "https://commons.wikimedia.org/wiki/File%3AHakkoda_Maru_moored_at_the_port_of_Aomori_20200621a.jpg" }
+  },
+  afactory: {
+    name: "A-FACTORY",
+    ticket: "入場免費",
+    points: [
+      "青森港旁的蘋果主題伴手禮與餐飲設施。",
+      "可買蘋果相關土產、果汁與甜點；2F 有餐廳（含 Galetteria Da Sasino）。",
+      "入場免費，適合短暫逛逛與購買伴手禮。",
+      "11/28 午餐也安排在此棟，可先熟悉動線。"
+    ],
+    photo: { src: "img/day-1125-afactory.jpg", alt: "A-FACTORY", credit: "掬茶 · CC BY-SA 4.0", commons: "https://commons.wikimedia.org/wiki/File%3AA-Factory_20200621.jpg" }
+  },
+  furukawa: {
+    name: "古川市場",
+    ticket: "市場逛逛免費；のっけ丼另計",
+    points: [
+      "青森市區著名的海鮮市場，攤位販售生鮮與定食。",
+      "招牌吃法是のっけ丼：買餐券後請攤商把食材蓋在飯上。",
+      "12 枚餐券約 ¥2,200（單枚約 ¥190）；屬餐費、非門票。",
+      "午餐時段較忙，可提早到或錯開人潮。"
+    ],
+    photo: { src: "img/day-1125-furukawa.jpg", alt: "古川市場", credit: "z tanuki · CC BY 3.0", commons: "https://commons.wikimedia.org/wiki/File%3AFurukawa_market_%2C_%E5%8F%A4%E5%B7%9D%E5%B8%82%E5%A0%B4_%E9%9D%92%E6%A3%AE%E9%AD%9A%E8%8F%9C%E3%82%BB%E3%83%B3%E3%82%BF%E3%83%BC_-_Panoramio_107351554.jpg" }
+  },
+  aspam: {
+    name: "ASPAM 青森縣觀光物產館",
+    ticket: "館內免費；13F 展望台大人 ¥500（可選）",
+    points: [
+      "三角形地標建築，集觀光諮詢、物產販售與展示於一樓。",
+      "館內逛逛與購物原則上免費。",
+      "13 樓展望台另計大人 ¥500，可俯瞰青森灣與八甲田丸方向。",
+      "與八甲田丸、A-FACTORY 同屬港灣散步圈。"
+    ],
+    photo: { src: "img/spot-aspam.jpg", alt: "ASPAM", credit: "掬茶 · CC BY-SA 4.0", commons: "https://commons.wikimedia.org/wiki/File%3AASPAM_20200621a.jpg" }
+  },
+  ropeway: {
+    name: "八甲田纜車／八甲田山",
+    ticket: "往復大人 ¥2,500（片道 ¥1,550）",
+    points: [
+      "從纜車站搭ロープウェー上八甲田山頂，冬季可見樹冰景觀。",
+      "往復大人 ¥2,500；遇強風可能停駛，當天要預留備案。",
+      "冬季運行約 9:00 起、上山最終約 15:40。",
+      "去程はっこうだ號需網預約（運費 ¥1,290＋預約料 ¥300／席）。"
+    ],
+    photo: { src: "img/day-1126-ropeway.jpg", alt: "八甲田纜車", credit: "Marho · CC BY-SA 4.0", commons: "https://commons.wikimedia.org/wiki/File%3AHakkoda_Ropeway_2019.jpg" }
+  },
+  asamushi: {
+    name: "淺虫水族館",
+    ticket: "大人 ¥1,200",
+    points: [
+      "青森近郊海濱水族館，有海豚秀等表演。",
+      "大人票 ¥1,200；最終海豚秀開始 10 分後入館可減至 ¥800。",
+      "行程安排約 15:30 海豚秀；之後可到附近海邊看夕陽。",
+      "從青森搭青い森鐵道約 30 分，片道約 ¥540。"
+    ],
+    photo: { src: "img/day-1126-asamushi.jpg", alt: "淺虫水族館", credit: "Drivephotographer · CC0", commons: "https://commons.wikimedia.org/wiki/File%3AAsamushi_Aquarium-2.jpg" }
+  },
+  oldLibrary: {
+    name: "舊弘前市立圖書館",
+    ticket: "免費",
+    points: [
+      "明治 39 年（1906）木造洋風建築，八角形雙塔是最大特色。",
+      "青森縣重寶；現作為鄉土文學相關展示空間開放。",
+      "開館約 9:00–17:00，入館免費。",
+      "位於追手門廣場一帶，與銀行記念館、弘前公園可步行串連。"
+    ],
+    photo: { src: "img/spot-old-library.jpg", alt: "舊弘前市立圖書館", credit: "あばさー · Public domain", commons: "https://commons.wikimedia.org/wiki/File%3AFormer_Hirosaki_City_Library.JPG" }
+  },
+  bankMemorial: {
+    name: "青森銀行記念館（舊第五十九銀行本店本館）",
+    ticket: "大人 ¥200",
+    points: [
+      "明治 37 年洋風建築，國指定重要文化財；白與薄荷綠外觀很醒目。",
+      "由名匠堀江佐吉設計施工，內部有金唐革紙等細節可看。",
+      "開館 9:30–16:30；每週二休（11/27 星期五開館）。",
+      "大人 ¥200；與舊圖書館同在市役所／追手門周邊。"
+    ],
+    photo: { src: "img/spot-bank-memorial.jpg", alt: "青森銀行記念館", credit: "Kaburamata · CC0", commons: "https://commons.wikimedia.org/wiki/File%3AFifty-Ninth_Bank_Head_Office_Main_Building_20200921.jpg" }
+  },
+  hirosakiPark: {
+    name: "弘前公園／弘前城",
+    ticket: "本丸冬季免費（11/24 起）",
+    points: [
+      "津輕氏的居城遺址與廣大公園，春季櫻花最有名。",
+      "11/24 至翌年 3/31 本丸無料開放；天守內部目前休館中。",
+      "冬季仍可在園區散步看城牆、護城河與天守外觀。",
+      "循環巴士於市役所前等站牌下車後步行可到。"
+    ],
+    photo: { src: "img/day-1127-hirosaki.jpg", alt: "弘前公園", credit: "Wikimedia Commons · CC BY-SA 3.0", commons: "https://commons.wikimedia.org/wiki/File%3AHirosaki_castle_park_-_panoramio.jpg" }
+  },
+  saishoin: {
+    name: "最勝院五重塔",
+    ticket: "非祭典期免費",
+    points: [
+      "弘前代表性的五重塔，朱漆塔身在秋冬景色中很醒目。",
+      "一般參拜／外觀在非祭典期間免費。",
+      "「菊と紅葉」活動至 11/9 止，行程當日已結束。",
+      "可與禅林街、長勝寺安排在同一下午動線。"
+    ],
+    photo: { src: "img/day-1127-saishoin.jpg", alt: "最勝院五重塔", credit: "Wikimedia Commons · CC BY-SA 3.0", commons: "https://commons.wikimedia.org/wiki/File%3AHirosaki_Saishoin_Pagoda.JPG" }
+  },
+  choshoji: {
+    name: "禅林街／長勝寺",
+    ticket: "外觀免費；導覽拝觀約 ¥300（待現場確認）",
+    points: [
+      "長勝寺是津輕氏菩提寺，位於集中 33 座寺院的禅林街。",
+      "三門、本堂等為國指定重要文化財，外觀可欣賞。",
+      "外觀參觀原則免費；若參加導覽／拝觀，現場費用約 ¥300（待確認）。",
+      "禅林街適合慢慢散步，感受寺院聚落氛圍。"
+    ],
+    photo: { src: "img/spot-choshoji.jpg", alt: "長勝寺（弘前）", credit: "あばさー · Public domain", commons: "https://commons.wikimedia.org/wiki/File%3AChosho-ji_%28Hirosaki%29.JPG" }
+  },
+  fujita: {
+    name: "藤田記念庭園",
+    ticket: "庭園 11/23 後休；洋館通年・費用待確認",
+    points: [
+      "近代實業家藤田家的庭園與洋館，是弘前代表性庭園景點。",
+      "庭園開園僅至 11/23；11/27 行程當日庭園休園。",
+      "洋館通年開館，但當日單獨費用請現場確認（標「待確認」）。",
+      "若只看外觀／洋館，請預留彈性，不要排太滿。"
+    ],
+    photo: { src: "img/day-1127-fujita.jpg", alt: "藤田記念庭園", credit: "Wikimedia Commons · CC BY 3.0", commons: "https://commons.wikimedia.org/wiki/File%3AFujita_Memorial_Japanese_Garden_-_panoramio.jpg" }
+  },
+  dotemachi: {
+    name: "土手町",
+    ticket: "逛街免費",
+    points: [
+      "弘前市長條形的主要商店街，串連伴手禮店與生活店鋪。",
+      "適合下午買土產、慢慢逛；可與万茶ン等咖啡店搭配。",
+      "循環巴士「土手町循環」行經此區，一日券 ¥600 可多次上下。",
+      "回弘前站前可在此收尾採買。"
+    ],
+    photo: { src: "img/spot-dotemachi.jpg", alt: "土手町商店街", credit: "Kaburamata · CC0", commons: "https://commons.wikimedia.org/wiki/File%3ADotemachi_2018_%28Hirosaki%2C_Japan%29.jpg" }
+  },
+  utou: {
+    name: "善知鳥神社",
+    ticket: "參拜免費",
+    points: [
+      "青森市區神社，「青森」地名傳說與善知鳥（ウトウ）有關。",
+      "參拜自由、無需門票，適合退房後短暫造訪。",
+      "位於市區，之後可接 A-FACTORY 午餐與機場巴士。",
+      "11 月清晨偏冷，外套要穿夠。"
+    ],
+    photo: { src: "img/day-1128-utou.jpg", alt: "善知鳥神社", credit: "Higa4 · CC0", commons: "https://commons.wikimedia.org/wiki/File%3AUtou-jinja04.jpg" }
+  }
+};
+
 const dayMeta = {
   "1122": { title: "抵達青森", stay: "露櫻酒店 青森站前店" },
   "1123": { title: "美術館・前往星野", stay: "星野リゾート 奥入瀬渓流ホテル" },
@@ -486,6 +829,7 @@ const dayMeta = {
   "1127": { title: "弘前一日遊", stay: "青森大和 ROYNET 飯店" },
   "1128": { title: "返台", stay: "當日退房" }
 };
+
 const daySteps = {
   "1122": [
     { t: "出發前往桃園機場", d: "機場接送，目標約 08:00 到桃園機場第二航廈" },
@@ -493,13 +837,13 @@ const daySteps = {
     { t: "14:20 抵達青森機場", d: "日本時間" },
     { t: "15:20 機場巴士", d: "約 15:55 到青森車站　大人 ¥980" },
     { t: "16:00 飯店 Check-in", d: "露櫻酒店 青森站前店" },
-    { t: "17:00 睡魔之家 WA・RASSE", d: "大人 ¥620；最晚入場約 17:30" },
+    { t: "17:00 睡魔之家 WA・RASSE", d: "大人 ¥620；最晚入場約 17:30", spots: ["warasse"] },
     { t: "約 18:00 晚餐", d: "お食事処おさない（扇貝料理）" }
   ],
   "1123": [
     { t: "早餐：喫茶マロン", d: "約 9:00；人潮多、僅收現金" },
-    { t: "青森縣立美術館", d: "約 10:00–11:00　常設／コレクション大人 ¥700；ねぶたん號可達（單次 ¥300／一日券 ¥800）" },
-    { t: "三內丸山遺跡", d: "約 12:00　一般 ¥500，持當日美術館票半券 ¥400" },
+    { t: "青森縣立美術館", d: "約 10:00–11:00　常設／コレクション大人 ¥700；ねぶたん號可達（單次 ¥300／一日券 ¥800）", spots: ["museum"] },
+    { t: "三內丸山遺跡", d: "約 12:00　一般 ¥500，持當日美術館票半券 ¥400", spots: ["sannai"] },
     { t: "回車站・午餐", d: "長尾中華そば 青森駅前店（煮干拉麵）" },
     { t: "露櫻酒店拿行李", d: "約 14:00" },
     { t: "15:00 星野接送", d: "青森駅西口出發　住客有料大人 ¥3,500／趟（需提前預約）" },
@@ -508,56 +852,89 @@ const daySteps = {
   ],
   "1124": [
     { t: "飯店早餐", d: "約 8:00" },
-    { t: "溪流接駁・雲景瀑布", d: "約 10:00；住客溪流接駁免費" },
-    { t: "奧入瀨溪散策", d: "約 11:00 起沿溪往飯店方向" },
-    { t: "石ヶ戸休憩所午餐", d: "蕎麥麵／烏龍麵，或自備飯糰" },
-    { t: "走到三亂之流", d: "約 13:00；11月末班回飯店約 15:42（飯店 15:00 發車那輪）" },
+    { t: "溪流接駁・雲景瀑布", d: "約 10:00；住客溪流接駁免費", spots: ["kumoi"] },
+    { t: "奧入瀨溪散策", d: "約 11:00 起沿溪往飯店方向", spots: ["ashura"] },
+    { t: "石ヶ戸休憩所午餐", d: "蕎麥麵／烏龍麵，或自備飯糰", spots: ["ishigedo"] },
+    { t: "走到三亂之流", d: "約 13:00；11月末班回飯店約 15:42（飯店 15:00 發車那輪）", spots: ["sanran"] },
     { t: "回飯店休息", d: "下午在館內閒晃" },
     { t: "晚餐", d: "星野飯店內" }
   ],
   "1125": [
     { t: "飯店早餐", d: "約 8:00" },
     { t: "10:30 星野接送回青森", d: "約 12:30 抵青森站　大人 ¥3,500／趟；到大和 ROYNET 放行李" },
-    { t: "古川市場午餐", d: "のっけ丼餐券 12枚 ¥2,200（或單枚 ¥190）" },
-    { t: "青函連絡船紀念船 八甲田丸", d: "約 14:00　大人 ¥510；冬季 9–17（最終 16:30）" },
-    { t: "A-FACTORY", d: "約 15:00，蘋果相關伴手禮（免費入場）" },
-    { t: "ASPAM 觀光物產館", d: "約 16:00；館內免費，13F展望台另 ¥500（可選）" },
+    { t: "古川市場午餐", d: "のっけ丼餐券 12枚 ¥2,200（或單枚 ¥190）", spots: ["furukawa"] },
+    { t: "青函連絡船紀念船 八甲田丸", d: "約 14:00　大人 ¥510；冬季 9–17（最終 16:30）", spots: ["hakkodamaru"] },
+    { t: "A-FACTORY", d: "約 15:00，蘋果相關伴手禮（免費入場）", spots: ["afactory"] },
+    { t: "ASPAM 觀光物產館", d: "約 16:00；館內免費，13F展望台另 ¥500（可選）", spots: ["aspam"] },
     { t: "市區逛逛", d: "約 17:00" },
     { t: "晚餐：鱒の介", d: "津輕家常菜與海鮮，建議訂位" }
   ],
   "1126": [
     { t: "飯店早餐", d: "約 7:00" },
     { t: "08:10 はっこうだ號", d: "青森駅→纜車站前 ¥1,290；需網預約＋預約料 ¥300／席（JRバス東北）" },
-    { t: "09:10 抵達・纜車", d: "往復大人 ¥2,500；強風可能停駛" },
+    { t: "09:10 抵達・纜車", d: "往復大人 ¥2,500；強風可能停駛", spots: ["ropeway"] },
     { t: "11:08 回青森", d: "纜車站前→青森駅 ¥1,290；約 12:03 抵站（回程免預約）" },
     { t: "午餐：サイゼリヤ", d: "＆LOVINA 店，快速用餐後接 13:08 火車" },
     { t: "13:08–13:39 往淺虫", d: "青い森鐵道　片道 ¥540" },
-    { t: "淺虫水族館", d: "大人 ¥1,200；15:30 海豚秀；之後海邊看夕陽" },
+    { t: "淺虫水族館", d: "大人 ¥1,200；15:30 海豚秀；之後海邊看夕陽", spots: ["asamushi"] },
     { t: "17:35–18:00 回青森", d: "鐵道片道 ¥540；晚餐：津軽じょっぱり漁屋酒場（三味線約 19:00，建議訂位）" }
   ],
   "1127": [
     { t: "09:04 特急往弘前", d: "特急つがる自由席合計 ¥1,240（運費 ¥720＋特急 ¥520）；約 09:40 抵達" },
-    { t: "10:00 循環巴士", d: "土手町循環單次現金 ¥200／一日券 ¥600；到市役所前；舊圖書館（免費）、青森銀行記念館（¥200）" },
-    { t: "弘前公園", d: "本丸冬季免費（11/24起）；天守內部休館中，園區仍可走" },
+    { t: "10:00 循環巴士", d: "土手町循環單次現金 ¥200／一日券 ¥600；到市役所前", spots: ["oldLibrary", "bankMemorial"] },
+    { t: "弘前公園", d: "本丸冬季免費（11/24起）；天守內部休館中，園區仍可走", spots: ["hirosakiPark"] },
     { t: "菊富士本店午餐", d: "津輕鄉土料理，建議訂位" },
-    { t: "最勝院五重塔・禅林街", d: "約 13:00；非祭典期拝観免費" },
-    { t: "長勝寺・藤田記念庭園", d: "長勝寺外觀免費；藤田庭園開園至 11/23，當日庭園休（洋館通年・費用待確認）" },
-    { t: "土手町逛街", d: "伴手禮" },
+    { t: "最勝院五重塔・禅林街", d: "約 13:00；非祭典期拝観免費", spots: ["saishoin", "choshoji"] },
+    { t: "長勝寺・藤田記念庭園", d: "長勝寺外觀免費；藤田庭園開園至 11/23，當日庭園休（洋館通年・費用待確認）", spots: ["choshoji", "fujita"] },
+    { t: "土手町逛街", d: "伴手禮", spots: ["dotemachi"] },
     { t: "17:00 万茶ン咖啡", d: "17:35 回弘前站" },
     { t: "18:03 特急回青森", d: "自由席合計 ¥1,240；約 18:38 抵達；晚餐 鮨処あすか 新町店（建議訂位）" }
   ],
   "1128": [
     { t: "飯店早餐後退房", d: "12:00 退房，時間可再跟飯店確認" },
-    { t: "善知鳥神社", d: "約 9:00，參拜免費" },
-    { t: "午餐：Galetteria Da Sasino", d: "A-FACTORY 2F，約 11:00；若休業改同館 OCEAN'S DINER" },
+    { t: "善知鳥神社", d: "約 9:00，參拜免費", spots: ["utou"] },
+    { t: "午餐：Galetteria Da Sasino", d: "A-FACTORY 2F，約 11:00；若休業改同館 OCEAN'S DINER", spots: ["afactory"] },
     { t: "12:40 機場巴士", d: "約 13:15 到青森機場　大人 ¥980" },
     { t: "15:30 起飛 BR121", d: "長榮航空，青森 → 台北（桃園）" },
     { t: "19:00 抵達桃園", d: "晚餐在機上或回台後" }
   ]
 };
+
 const dayPhotos = {"1122": [{"src": "img/day-1122-nebuta.jpg", "alt": "睡魔之家 WA・RASSE", "label": "睡魔之家 WA・RASSE", "credit": "掬茶 · CC BY-SA 4.0", "commons": "https://commons.wikimedia.org/wiki/File%3ANebuta_Museum_Wa_Rasse_20200621.jpg"}], "1123": [{"src": "img/day-1123-museum.jpg", "alt": "青森縣立美術館", "label": "青森縣立美術館", "credit": "663highland · CC BY 2.5", "commons": "https://commons.wikimedia.org/wiki/File%3A140913_Aomori_Museum_of_Art_Japan02bs3.jpg"}, {"src": "img/day-1123-sannai.jpg", "alt": "三內丸山遺跡", "label": "三內丸山遺跡", "credit": "663highland · CC BY 2.5", "commons": "https://commons.wikimedia.org/wiki/File%3A140913_Sannai-Maruyama_site_Aomori_Japan01bs6bs6.jpg"}], "1124": [{"src": "img/day-1124-kumoi.jpg", "alt": "雲井之瀧", "label": "雲井之瀧", "credit": "Daderot · CC0", "commons": "https://commons.wikimedia.org/wiki/File%3AKumoi_Falls_-_Oirase_Mountain_Stream_-_Towada%2C_Aomori_-_DSC01198.jpg"}, {"src": "img/day-1124-ashura.jpg", "alt": "阿修羅之流", "label": "阿修羅之流", "credit": "Wikimedia Commons · CC BY-SA 3.0", "commons": "https://commons.wikimedia.org/wiki/File%3A%E9%98%BF%E4%BF%AE%E7%BE%85%E3%81%AE%E6%B5%81%E3%82%8C.jpg"}, {"src": "img/day-1124-stream.jpg", "alt": "溪流散策", "label": "溪流散策", "credit": "OKJaguar · CC BY-SA 4.0", "commons": "https://commons.wikimedia.org/wiki/File%3AOirase_Stream%2C_Towada-Hachimantai_National_Park%2C_Japan.jpg"}], "1125": [{"src": "img/day-1125-furukawa.jpg", "alt": "古川市場", "label": "古川市場", "credit": "z tanuki · CC BY 3.0", "commons": "https://commons.wikimedia.org/wiki/File%3AFurukawa_market_%2C_%E5%8F%A4%E5%B7%9D%E5%B8%82%E5%A0%B4_%E9%9D%92%E6%A3%AE%E9%AD%9A%E8%8F%9C%E3%82%BB%E3%83%B3%E3%82%BF%E3%83%BC_-_Panoramio_107351554.jpg"}, {"src": "img/day-1125-hakkodamaru.jpg", "alt": "八甲田丸", "label": "八甲田丸", "credit": "掬茶 · CC BY-SA 4.0", "commons": "https://commons.wikimedia.org/wiki/File%3AHakkoda_Maru_moored_at_the_port_of_Aomori_20200621a.jpg"}, {"src": "img/day-1125-afactory.jpg", "alt": "A-FACTORY", "label": "A-FACTORY", "credit": "掬茶 · CC BY-SA 4.0", "commons": "https://commons.wikimedia.org/wiki/File%3AA-Factory_20200621.jpg"}], "1126": [{"src": "img/day-1126-ropeway.jpg", "alt": "八甲田纜車", "label": "八甲田纜車", "credit": "Marho · CC BY-SA 4.0", "commons": "https://commons.wikimedia.org/wiki/File%3AHakkoda_Ropeway_2019.jpg"}, {"src": "img/day-1126-asamushi.jpg", "alt": "淺虫水族館", "label": "淺虫水族館", "credit": "Drivephotographer · CC0", "commons": "https://commons.wikimedia.org/wiki/File%3AAsamushi_Aquarium-2.jpg"}], "1127": [{"src": "img/day-1127-hirosaki.jpg", "alt": "弘前公園", "label": "弘前公園", "credit": "Wikimedia Commons · CC BY-SA 3.0", "commons": "https://commons.wikimedia.org/wiki/File%3AHirosaki_castle_park_-_panoramio.jpg"}, {"src": "img/day-1127-saishoin.jpg", "alt": "最勝院五重塔", "label": "最勝院五重塔", "credit": "Wikimedia Commons · CC BY-SA 3.0", "commons": "https://commons.wikimedia.org/wiki/File%3AHirosaki_Saishoin_Pagoda.JPG"}, {"src": "img/day-1127-fujita.jpg", "alt": "藤田記念庭園", "label": "藤田記念庭園", "credit": "Wikimedia Commons · CC BY 3.0", "commons": "https://commons.wikimedia.org/wiki/File%3AFujita_Memorial_Japanese_Garden_-_panoramio.jpg"}], "1128": [{"src": "img/day-1128-utou.jpg", "alt": "善知鳥神社", "label": "善知鳥神社", "credit": "Higa4 · CC0", "commons": "https://commons.wikimedia.org/wiki/File%3AUtou-jinja04.jpg"}]};
+
 const order = ["1122","1123","1124","1125","1126","1127","1128"];
 const labels = { "1122":"11/22","1123":"11/23","1124":"11/24","1125":"11/25","1126":"11/26","1127":"11/27","1128":"11/28" };
+
+const staticCredits = [
+  { href: "https://commons.wikimedia.org/wiki/File%3AOirase_Gorge_-_OiraseGorge7015.jpg", label: "奧入瀨溪流", credit: "lumoplank · CC0" },
+  { href: "https://commons.wikimedia.org/wiki/File%3AHotel_Route_Inn_Aomori_Ekimae.JPG", label: "露櫻酒店（Hotel Route Inn）青森站前店", credit: "あばさー · Public domain" },
+  { href: "https://commons.wikimedia.org/wiki/File%3AOirase_Keiryu_Hotel_-_Oirase_Mountain_Stream_-_Towada%2C_Aomori_-_DSC00841.jpg", label: "星野リゾート 奥入瀬渓流ホテル", credit: "Daderot · CC0" },
+  { href: "https://commons.wikimedia.org/wiki/File%3ADaiwa_Roynet_Hotel_Aomori_20200621.jpg", label: "青森大和 ROYNET 飯店", credit: "掬茶 · CC BY-SA 4.0" },
+  { href: "https://commons.wikimedia.org/wiki/File%3AOirase_Stream%2C_Towada-Hachimantai_National_Park%2C_Japan.jpg", label: "奧入瀨溪流散策", credit: "OKJaguar · CC BY-SA 4.0" }
+];
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderCredits() {
+  const seen = new Set();
+  const items = [];
+  staticCredits.forEach(c => {
+    if (seen.has(c.href)) return;
+    seen.add(c.href);
+    items.push(c);
+  });
+  Object.values(spots).forEach(sp => {
+    if (!sp.photo) return;
+    if (seen.has(sp.photo.commons)) return;
+    seen.add(sp.photo.commons);
+    items.push({ href: sp.photo.commons, label: sp.name, credit: sp.photo.credit });
+  });
+  document.getElementById("creditsList").innerHTML = items.map(c =>
+    `<li><a href="${c.href}" target="_blank" rel="noopener">${esc(c.label)}</a> — ${esc(c.credit)}</li>`
+  ).join("");
+}
 
 function render(day) {
   const meta = dayMeta[day];
@@ -565,14 +942,22 @@ function render(day) {
   const gal = document.getElementById("dayGallery");
   gal.innerHTML = dayPhotos[day].map(p =>
     `<figure>
-      <img src="${p.src}" alt="${p.alt}" loading="lazy" />
-      <figcaption>${p.label}<br><a href="${p.commons}" target="_blank" rel="noopener">${p.credit}</a></figcaption>
+      <img src="${p.src}" alt="${esc(p.alt)}" loading="lazy" />
+      <figcaption>${esc(p.label)}<br><a href="${p.commons}" target="_blank" rel="noopener">${esc(p.credit)}</a></figcaption>
     </figure>`
   ).join("");
   const ol = document.getElementById("daySteps");
-  ol.innerHTML = daySteps[day].map(s =>
-    `<li><div class="t">${s.t}</div><div class="d">${s.d || ""}</div></li>`
-  ).join("");
+  ol.innerHTML = daySteps[day].map(s => {
+    let spotHtml = "";
+    if (s.spots && s.spots.length) {
+      spotHtml = `<div class="spot-links">` + s.spots.map(id => {
+        const sp = spots[id];
+        if (!sp) return "";
+        return `<button type="button" class="spot-btn" data-spot="${id}">${esc(sp.name)}</button>`;
+      }).join("") + `</div>`;
+    }
+    return `<li><div class="t">${esc(s.t)}</div><div class="d">${esc(s.d || "")}</div>${spotHtml}</li>`;
+  }).join("");
   document.querySelectorAll("#dayTabs button").forEach(b => {
     b.setAttribute("aria-selected", b.dataset.day === day ? "true" : "false");
   });
@@ -588,6 +973,66 @@ order.forEach(d => {
   b.addEventListener("click", () => render(d));
   tabs.appendChild(b);
 });
+
+const backdrop = document.getElementById("modalBackdrop");
+const modal = document.getElementById("spotModal");
+const modalTitle = document.getElementById("spotModalTitle");
+const modalBody = document.getElementById("spotModalBody");
+const modalClose = document.getElementById("spotModalClose");
+let lastFocus = null;
+
+function openSpot(id) {
+  const sp = spots[id];
+  if (!sp) return;
+  lastFocus = document.activeElement;
+  modalTitle.textContent = sp.name;
+  let photoHtml = sp.photo
+    ? `<img class="modal-photo" src="${sp.photo.src}" alt="${esc(sp.photo.alt)}" />`
+    : `<div class="no-photo">暫無合適授權照片</div>`;
+  let creditHtml = sp.photo
+    ? `<div class="modal-credit">照片：<a href="${sp.photo.commons}" target="_blank" rel="noopener">${esc(sp.photo.credit)}</a></div>`
+    : "";
+  modalBody.innerHTML =
+    photoHtml +
+    `<span class="ticket">${esc(sp.ticket)}</span>` +
+    `<ul>` + sp.points.map(p => `<li>${esc(p)}</li>`).join("") + `</ul>` +
+    creditHtml;
+  backdrop.hidden = false;
+  modal.hidden = false;
+  requestAnimationFrame(() => {
+    backdrop.classList.add("open");
+    modal.classList.add("open");
+  });
+  document.body.classList.add("modal-open");
+  modalClose.focus();
+}
+
+function closeSpot() {
+  backdrop.classList.remove("open");
+  modal.classList.remove("open");
+  document.body.classList.remove("modal-open");
+  setTimeout(() => {
+    if (!modal.classList.contains("open")) {
+      backdrop.hidden = true;
+      modal.hidden = true;
+      modalBody.innerHTML = "";
+    }
+  }, 250);
+  if (lastFocus && typeof lastFocus.focus === "function") lastFocus.focus();
+}
+
+document.getElementById("daySteps").addEventListener("click", e => {
+  const btn = e.target.closest("[data-spot]");
+  if (!btn) return;
+  openSpot(btn.dataset.spot);
+});
+modalClose.addEventListener("click", closeSpot);
+backdrop.addEventListener("click", closeSpot);
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && modal.classList.contains("open")) closeSpot();
+});
+
+renderCredits();
 render("1122");
 </script>
 </body>
