@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<meta name="description" content="2026 青森七日行程總覽：航班、住宿、每日動線與餐食" />
+<title>2026 青森之旅 11/22–11/28</title>
+<style>
+  :root {
+    --bg: #f7f3ee;
+    --card: #ffffff;
+    --ink: #1f2a2e;
+    --muted: #5c6b73;
+    --accent: #1a6b5a;
+    --accent-soft: #d8efe8;
+    --warn: #8a5a16;
+    --warn-bg: #fff4e0;
+    --line: #e5ddd2;
+    --shadow: 0 10px 30px rgba(31,42,46,.08);
+    --radius: 16px;
+    --max: 760px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: "PingFang TC", "Noto Sans TC", "Hiragino Sans", "Microsoft JhengHei", sans-serif;
+    color: var(--ink);
+    background: linear-gradient(180deg, #e9f2ef 0%, var(--bg) 220px);
+    line-height: 1.65;
+  }
+  a { color: var(--accent); }
+  img { max-width: 100%; display: block; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 16px 64px; }
+  .hero {
+    position: relative;
+    border-radius: 0 0 24px 24px;
+    overflow: hidden;
+    margin: 0 -16px 24px;
+    box-shadow: var(--shadow);
+  }
+  .hero img { width: 100%; height: 280px; object-fit: cover; }
+  .hero .overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(15,35,40,.15), rgba(15,35,40,.72));
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 24px 20px 18px;
+    color: #fff;
+  }
+  .hero h1 { margin: 0 0 6px; font-size: 1.55rem; letter-spacing: .02em; }
+  .hero p { margin: 0; opacity: .92; font-size: .95rem; }
+  .hero .credit, .credit {
+    font-size: .72rem; color: rgba(255,255,255,.85); margin-top: 8px;
+  }
+  .credit a { color: inherit; }
+  figure .credit, .photo-credit {
+    color: var(--muted); margin-top: 6px; font-size: .72rem;
+  }
+  nav.toc {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin: 0 0 28px;
+  }
+  nav.toc a {
+    text-decoration: none;
+    background: var(--card);
+    border: 1px solid var(--line);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: .85rem;
+    color: var(--ink);
+  }
+  section {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px 18px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow);
+  }
+  section h2 {
+    margin: 0 0 14px;
+    font-size: 1.2rem;
+    color: var(--accent);
+    border-bottom: 2px solid var(--accent-soft);
+    padding-bottom: 8px;
+  }
+  section .cap { color: var(--muted); font-size: .88rem; margin: -6px 0 14px; }
+  .props { display: grid; gap: 10px; }
+  .prop {
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--line);
+  }
+  .prop:last-child { border-bottom: 0; }
+  .prop .k { color: var(--muted); font-size: .85rem; }
+  .prop .v { font-weight: 560; }
+  .lodging { display: grid; gap: 14px; }
+  .lodge {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 12px;
+    align-items: start;
+    padding: 10px;
+    background: #faf8f5;
+    border-radius: 12px;
+  }
+  .lodge img {
+    width: 110px; height: 90px; object-fit: cover; border-radius: 10px;
+  }
+  .lodge .when { font-size: .78rem; color: var(--muted); }
+  .lodge h3 { margin: 2px 0 4px; font-size: 1rem; }
+  .lodge .note { font-size: .88rem; color: var(--muted); }
+  .badge {
+    display: inline-block;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: .72rem;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-weight: 600;
+  }
+  .day-tabs {
+    display: flex; gap: 6px; overflow-x: auto;
+    padding-bottom: 8px; margin-bottom: 12px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .day-tabs button {
+    flex: 0 0 auto;
+    border: 1px solid var(--line);
+    background: #fff;
+    border-radius: 999px;
+    padding: 8px 14px;
+    font: inherit;
+    font-size: .9rem;
+    cursor: pointer;
+    color: var(--ink);
+  }
+  .day-tabs button[aria-selected="true"] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .day-meta {
+    margin: 0 0 12px;
+    font-weight: 600;
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .gallery figure { margin: 0; }
+  .gallery img {
+    width: 100%; height: 140px; object-fit: cover; border-radius: 12px;
+  }
+  .gallery figcaption {
+    font-size: .78rem; color: var(--muted); margin-top: 4px;
+  }
+  ol.steps {
+    margin: 0; padding: 0; list-style: none; counter-reset: step;
+  }
+  ol.steps li {
+    position: relative;
+    padding: 0 0 16px 40px;
+    border-left: 2px solid var(--accent-soft);
+    margin-left: 12px;
+  }
+  ol.steps li:last-child { border-left-color: transparent; padding-bottom: 0; }
+  ol.steps li::before {
+    counter-increment: step;
+    content: counter(step);
+    position: absolute; left: -13px; top: 0;
+    width: 24px; height: 24px;
+    background: var(--accent); color: #fff;
+    border-radius: 50%;
+    font-size: .75rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  ol.steps .t { font-weight: 650; }
+  ol.steps .d { color: var(--muted); font-size: .9rem; }
+  table.meals {
+    width: 100%; border-collapse: collapse; font-size: .9rem;
+  }
+  table.meals th, table.meals td {
+    text-align: left; padding: 10px 8px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  table.meals th { color: var(--muted); font-weight: 600; font-size: .8rem; }
+  .callout {
+    background: var(--warn-bg);
+    border-left: 4px solid var(--warn);
+    padding: 12px 14px;
+    border-radius: 8px;
+    margin-bottom: 14px;
+    color: #4a350c;
+  }
+  .callout strong { display: block; margin-bottom: 4px; }
+  .tips { display: grid; gap: 10px; }
+  .tip {
+    padding: 10px 12px;
+    background: #faf8f5;
+    border-radius: 10px;
+  }
+  .tip h3 { margin: 0 0 4px; font-size: .95rem; }
+  .tip p { margin: 0; color: var(--muted); font-size: .9rem; }
+  .pack { display: grid; gap: 8px; }
+  .pack-item {
+    display: grid; grid-template-columns: 120px 1fr; gap: 8px;
+    padding: 8px 0; border-bottom: 1px dashed var(--line);
+  }
+  .pack-item:last-child { border-bottom: 0; }
+  .pack-item .k { font-weight: 600; font-size: .9rem; }
+  .pack-item .v { color: var(--muted); font-size: .9rem; }
+  .credits ul { padding-left: 18px; margin: 0; font-size: .82rem; color: var(--muted); }
+  .credits li { margin-bottom: 6px; }
+  footer {
+    text-align: center; color: var(--muted); font-size: .8rem; margin-top: 8px;
+  }
+  .topbtn {
+    position: fixed; right: 16px; bottom: 16px;
+    background: var(--accent); color: #fff; border: 0;
+    border-radius: 999px; padding: 10px 14px;
+    font: inherit; font-size: .85rem; cursor: pointer;
+    box-shadow: var(--shadow); opacity: .92;
+  }
+  @media (min-width: 640px) {
+    .hero img { height: 340px; }
+    .lodge { grid-template-columns: 160px 1fr; }
+    .lodge img { width: 160px; height: 120px; }
+    .gallery img { height: 170px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <img src="img/hero-oirase.jpg" alt="奧入瀨溪流秋景，苔石與流水" />
+    <div class="overlay">
+      <h1>2026 青森之旅</h1>
+      <p>11/22（日）– 11/28（六）｜兩人七日</p>
+      <span class="credit"><a href="https://commons.wikimedia.org/wiki/File%3AOirase_Gorge_-_OiraseGorge7015.jpg" target="_blank" rel="noopener">奧入瀨溪流</a> · lumoplank · CC0</span>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="目錄">
+    <a href="#overview">行程概要</a>
+    <a href="#lodging">住宿</a>
+    <a href="#days">每日行程</a>
+    <a href="#meals">餐食安排</a>
+    <a href="#tips">實用提醒</a>
+    <a href="#pack">天氣與打包</a>
+    <a href="#credits">圖片來源</a>
+  </nav>
+
+  <section id="overview">
+    <h2>行程概要</h2>
+    <div class="props">
+      <div class="prop"><div class="k">日期</div><div class="v">2026/11/22（日）– 11/28（六）</div></div>
+      <div class="prop"><div class="k">人數</div><div class="v">2 人</div></div>
+      <div class="prop"><div class="k">去程</div><div class="v">BR122　11/22　09:55 桃園 T2 → 14:20 青森</div></div>
+      <div class="prop"><div class="k">回程</div><div class="v">BR121　11/28　15:30 青森 → 19:00 桃園</div></div>
+      <div class="prop"><div class="k">航空</div><div class="v">長榮航空 EVA Air</div></div>
+      <div class="prop"><div class="k">出發</div><div class="v">出發前往桃園機場，目標約 08:00 到機場第二航廈</div></div>
+    </div>
+    <p style="margin:14px 0 0;color:var(--muted);font-size:.92rem">
+      時間除另註明外皆為日本當地時間。住宿都已訂好，標「建議訂位」的餐廳出發前再處理即可。參考圖取自 Wikimedia Commons，僅供旅伴辨識景點與飯店外觀。
+    </p>
+  </section>
+
+  <section id="lodging">
+    <h2>住宿</h2>
+    <div class="lodging">
+      <article class="lodge">
+        <div>
+          <img src="img/hotel-route-inn.jpg" alt="Hotel Route Inn 青森站前店外觀" />
+          <span class="credit photo-credit"><a href="https://commons.wikimedia.org/wiki/File%3AHotel_Route_Inn_Aomori_Ekimae.JPG" target="_blank" rel="noopener">露櫻酒店（Hotel Route Inn）青森站前店</a> · あばさー · Public domain</span>
+        </div>
+        <div>
+          <div class="when">11/22　<span class="badge">已訂</span></div>
+          <h3>露櫻酒店 青森站前店</h3>
+          <div class="note">抵達夜，青森站步行可到</div>
+        </div>
+      </article>
+      <article class="lodge">
+        <div>
+          <img src="img/hotel-hoshino.jpg" alt="星野奧入瀨溪流飯店建築外觀" />
+          <span class="credit photo-credit"><a href="https://commons.wikimedia.org/wiki/File%3AOirase_Keiryu_Hotel_-_Oirase_Mountain_Stream_-_Towada%2C_Aomori_-_DSC00841.jpg" target="_blank" rel="noopener">星野リゾート 奥入瀬渓流ホテル</a> · Daderot · CC0</span>
+        </div>
+        <div>
+          <div class="when">11/23–24　<span class="badge">已訂</span></div>
+          <h3>星野リゾート 奥入瀬渓流ホテル</h3>
+          <div class="note">兩晚含早餐與晚餐，搭星野接送往返青森站</div>
+        </div>
+      </article>
+      <article class="lodge">
+        <div>
+          <img src="img/hotel-daiwa.jpg" alt="ダイワロイネットホテル青森外觀" />
+          <span class="credit photo-credit"><a href="https://commons.wikimedia.org/wiki/File%3ADaiwa_Roynet_Hotel_Aomori_20200621.jpg" target="_blank" rel="noopener">青森大和 ROYNET 飯店</a> · 掬茶 · CC BY-SA 4.0</span>
+        </div>
+        <div>
+          <div class="when">11/25–27　<span class="badge">已訂</span></div>
+          <h3>青森大和 ROYNET 飯店</h3>
+          <div class="note">三晚，市區住宿</div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="days">
+    <h2>每日行程</h2>
+    <p class="cap">點選日期查看當日動線與參考圖</p>
+    <div class="day-tabs" role="tablist" aria-label="選擇日期" id="dayTabs"></div>
+    <p class="day-meta" id="dayMeta"></p>
+    <div class="gallery" id="dayGallery"></div>
+    <ol class="steps" id="daySteps"></ol>
+  </section>
+
+  <section id="meals">
+    <h2>餐食安排</h2>
+    <p class="cap">餐廳尚未全部訂位；標「建議訂位」的請出發前處理。</p>
+    <div style="overflow-x:auto">
+      <table class="meals">
+        <thead><tr><th>日期</th><th>午餐</th><th>晚餐</th></tr></thead>
+        <tbody>
+          <tr><td>11/22</td><td>機上</td><td>お食事処おさない（扇貝貝焼味噌定食，約 18:00）</td></tr>
+          <tr><td>11/23</td><td>長尾中華そば 青森駅前店</td><td>星野飯店（方案含晚餐）</td></tr>
+          <tr><td>11/24</td><td>石ヶ戸休憩所（蕎麥麵／烏龍麵）</td><td>星野飯店（方案含晚餐）</td></tr>
+          <tr><td>11/25</td><td>古川市場 のっけ丼</td><td>鱒の介（建議訂位）</td></tr>
+          <tr><td>11/26</td><td>サイゼリヤ ＆LOVINA（求快）</td><td>津軽じょっぱり漁屋酒場（三味線約 19:00，建議訂位）</td></tr>
+          <tr><td>11/27</td><td>菊富士本店（建議訂位）</td><td>鮨処あすか 新町店（建議訂位）</td></tr>
+          <tr><td>11/28</td><td>Galetteria Da Sasino（A-FACTORY 2F；休則改 OCEAN'S DINER）</td><td>機上／回台</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin:12px 0 0;color:var(--muted);font-size:.9rem">
+      11/23 為日本勤勞感謝日，店家可能較忙；11/26 午餐僅約一小時緩衝，排隊就改買車站外帶。
+    </p>
+  </section>
+
+  <section id="tips">
+    <h2>實用提醒</h2>
+    <div class="callout">
+      <strong>先記這三件</strong>
+      奧入瀨僅能搭星野住客溪流接駁；八甲田巴士要先訂位；弘前城天守改建中、れんが倉庫美術館當日休館。
+    </div>
+    <div class="tips">
+      <div class="tip">
+        <h3>11/24 奧入瀨</h3>
+        <p>對外巴士冬季停駛，只能坐星野住客溪流接駁。從三亂之流回飯店末班約 15:42。</p>
+      </div>
+      <div class="tip">
+        <h3>11/26 はっこうだ號</h3>
+        <p>需向 JR バス東北預約座位；八甲田纜車遇強風可能停駛。</p>
+      </div>
+      <div class="tip">
+        <h3>11/27 弘前</h3>
+        <p>天守改建中；弘前れんが倉庫美術館當日休館。循環巴士約 10:00 起。</p>
+      </div>
+      <div class="tip">
+        <h3>逛街採買</h3>
+        <p>車站 LOVINA／＆LOVINA：無印、GLOBAL WORK。唐吉訶德青森觀光通店與 UNIQLO、GU 在 DREAM TOWN ALi：青森站東口 6 號搭 M35，於 シーナシーナ青森前 下車。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="pack">
+    <h2>天氣與打包</h2>
+    <p style="margin-top:0;color:var(--muted);font-size:.95rem">
+      11 月下旬青森／奧入瀨常見約 0–5°C，可能有小雪或零星降雪，木棧道容易濕滑結冰。八甲田已進入積雪季節。
+    </p>
+    <div class="pack">
+      <div class="pack-item"><div class="k">防水防滑鞋</div><div class="v">溪流步道與市區早晚必備；可加簡易冰爪</div></div>
+      <div class="pack-item"><div class="k">保暖防風外套</div><div class="v">層次穿搭，山頂與溪谷風大</div></div>
+      <div class="pack-item"><div class="k">手套、毛帽、圍巾</div><div class="v">戶外停留時間長時很有感</div></div>
+      <div class="pack-item"><div class="k">輕食備援</div><div class="v">溪流日與趕車日可帶飯糰或能量棒</div></div>
+    </div>
+  </section>
+
+  <section id="credits" class="credits">
+    <h2>圖片來源</h2>
+    <p class="cap">以下照片取自 Wikimedia Commons，依授權標示作者與授權條款。點連結可查看原圖頁面。</p>
+    <ul>
+<li><a href="https://commons.wikimedia.org/wiki/File%3AOirase_Gorge_-_OiraseGorge7015.jpg" target="_blank" rel="noopener">奧入瀨溪流</a> — lumoplank · CC0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3AHotel_Route_Inn_Aomori_Ekimae.JPG" target="_blank" rel="noopener">露櫻酒店（Hotel Route Inn）青森站前店</a> — あばさー · Public domain</li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3AOirase_Keiryu_Hotel_-_Oirase_Mountain_Stream_-_Towada%2C_Aomori_-_DSC00841.jpg" target="_blank" rel="noopener">星野リゾート 奥入瀬渓流ホテル</a> — Daderot · CC0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3ADaiwa_Roynet_Hotel_Aomori_20200621.jpg" target="_blank" rel="noopener">青森大和 ROYNET 飯店</a> — 掬茶 · CC BY-SA 4.0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3ANebuta_Museum_Wa_Rasse_20200621.jpg" target="_blank" rel="noopener">睡魔之家 WA・RASSE</a> — 掬茶 · CC BY-SA 4.0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3A140913_Aomori_Museum_of_Art_Japan02bs3.jpg" target="_blank" rel="noopener">青森縣立美術館</a> — 663highland · CC BY 2.5</li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3A140913_Sannai-Maruyama_site_Aomori_Japan01bs6bs6.jpg" target="_blank" rel="noopener">三內丸山遺跡</a> — 663highland · CC BY 2.5</li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3AKumoi_Falls_-_Oirase_Mountain_Stream_-_Towada%2C_Aomori_-_DSC01198.jpg" target="_blank" rel="noopener">雲井之瀧（雲景瀑布）</a> — Daderot · CC0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3A%E9%98%BF%E4%BF%AE%E7%BE%85%E3%81%AE%E6%B5%81%E3%82%8C.jpg" target="_blank" rel="noopener">阿修羅之流</a> — （作者未標示） · CC BY-SA 3.0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3AOirase_Stream%2C_Towada-Hachimantai_National_Park%2C_Japan.jpg" target="_blank" rel="noopener">奧入瀨溪流散策</a> — OKJaguar · CC BY-SA 4.0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3AFurukawa_market_%2C_%E5%8F%A4%E5%B7%9D%E5%B8%82%E5%A0%B4_%E9%9D%92%E6%A3%AE%E9%AD%9A%E8%8F%9C%E3%82%BB%E3%83%B3%E3%82%BF%E3%83%BC_-_Panoramio_107351554.jpg" target="_blank" rel="noopener">古川市場</a> — z tanuki · CC BY 3.0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3AHakkoda_Maru_moored_at_the_port_of_Aomori_20200621a.jpg" target="_blank" rel="noopener">八甲田丸</a> — 掬茶 · CC BY-SA 4.0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3AA-Factory_20200621.jpg" target="_blank" rel="noopener">A-FACTORY</a> — 掬茶 · CC BY-SA 4.0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3AHakkoda_Ropeway_2019.jpg" target="_blank" rel="noopener">八甲田纜車</a> — Marho · CC BY-SA 4.0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3AAsamushi_Aquarium-2.jpg" target="_blank" rel="noopener">淺虫水族館</a> — Drivephotographer · CC0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3AHirosaki_castle_park_-_panoramio.jpg" target="_blank" rel="noopener">弘前公園</a> — （作者未標示） · CC BY-SA 3.0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3AHirosaki_Saishoin_Pagoda.JPG" target="_blank" rel="noopener">最勝院五重塔</a> — （作者未標示） · CC BY-SA 3.0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3AFujita_Memorial_Japanese_Garden_-_panoramio.jpg" target="_blank" rel="noopener">藤田記念庭園</a> — （作者未標示） · CC BY 3.0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3AUtou-jinja04.jpg" target="_blank" rel="noopener">善知鳥神社</a> — Higa4 · CC0</li>
+    </ul>
+  </section>
+
+  <footer>僅供旅伴參考 · 行程內容可能微調</footer>
+</div>
+
+<button class="topbtn" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})">回到頂部</button>
+
+<script>
+const dayMeta = {
+  "1122": { title: "抵達青森", stay: "露櫻酒店 青森站前店" },
+  "1123": { title: "美術館・前往星野", stay: "星野リゾート 奥入瀬渓流ホテル" },
+  "1124": { title: "奧入瀨溪流", stay: "星野リゾート 奥入瀬渓流ホテル" },
+  "1125": { title: "回市區・逛街", stay: "青森大和 ROYNET 飯店" },
+  "1126": { title: "八甲田山・淺虫", stay: "青森大和 ROYNET 飯店" },
+  "1127": { title: "弘前一日遊", stay: "青森大和 ROYNET 飯店" },
+  "1128": { title: "返台", stay: "當日退房" }
+};
+const daySteps = {
+  "1122": [
+    { t: "出發前往桃園機場", d: "機場接送，目標約 08:00 到桃園機場第二航廈" },
+    { t: "09:55 起飛 BR122", d: "長榮航空，台北（桃園）→ 青森" },
+    { t: "14:20 抵達青森機場", d: "日本時間" },
+    { t: "15:20 機場巴士", d: "約 15:55 到青森車站" },
+    { t: "16:00 飯店 Check-in", d: "露櫻酒店 青森站前店" },
+    { t: "17:00 睡魔之家 WA・RASSE", d: "最晚入場約 17:30，留時間吃晚餐" },
+    { t: "約 18:00 晚餐", d: "お食事処おさない（扇貝料理）" }
+  ],
+  "1123": [
+    { t: "早餐：喫茶マロン", d: "約 9:00；人潮多、僅收現金" },
+    { t: "青森縣立美術館", d: "約 10:00–11:00" },
+    { t: "三內丸山遺跡", d: "約 12:00" },
+    { t: "回車站・午餐", d: "長尾中華そば 青森駅前店（煮干拉麵）" },
+    { t: "露櫻酒店拿行李", d: "約 14:00" },
+    { t: "15:00 星野接送", d: "青森駅西口出發" },
+    { t: "約 17:00 抵達星野", d: "星野リゾート 奥入瀬渓流ホテル" },
+    { t: "晚餐", d: "星野飯店內（住宿方案已含）" }
+  ],
+  "1124": [
+    { t: "飯店早餐", d: "約 8:00" },
+    { t: "溪流接駁・雲景瀑布", d: "約 10:00；僅限星野住客溪流接駁車" },
+    { t: "奧入瀨溪散策", d: "約 11:00 起沿溪往飯店方向" },
+    { t: "石ヶ戸休憩所午餐", d: "蕎麥麵／烏龍麵，或自備飯糰" },
+    { t: "走到三亂之流", d: "約 13:00；末班回飯店接駁約 15:42" },
+    { t: "回飯店休息", d: "下午在館內閒晃" },
+    { t: "晚餐", d: "星野飯店內" }
+  ],
+  "1125": [
+    { t: "飯店早餐", d: "約 8:00" },
+    { t: "10:30 星野接送回青森", d: "約 12:30 抵達青森站，到大和 ROYNET 放行李" },
+    { t: "古川市場午餐", d: "自選海鮮のっけ丼" },
+    { t: "青函連絡船紀念船 八甲田丸", d: "約 14:00" },
+    { t: "A-FACTORY", d: "約 15:00，蘋果相關伴手禮" },
+    { t: "ASPAM 觀光物產館", d: "約 16:00" },
+    { t: "市區逛逛", d: "約 17:00" },
+    { t: "晚餐：鱒の介", d: "津輕家常菜與海鮮，建議訂位" }
+  ],
+  "1126": [
+    { t: "飯店早餐", d: "約 7:00" },
+    { t: "08:10 はっこうだ號", d: "前往八甲田；需事先訂位（JR バス東北）" },
+    { t: "09:10 抵達・纜車", d: "強風可能停駛，保留備案" },
+    { t: "11:08 回青森", d: "約 12:03 抵達車站" },
+    { t: "午餐：サイゼリヤ", d: "＆LOVINA 店，快速用餐後接 13:08 火車" },
+    { t: "13:08–13:39 往淺虫", d: "青い森鐵道" },
+    { t: "淺虫水族館", d: "15:30 海豚秀；之後海邊看夕陽" },
+    { t: "17:35–18:00 回青森", d: "晚餐：津軽じょっぱり漁屋酒場（三味線約 19:00，建議訂位）" }
+  ],
+  "1127": [
+    { t: "09:04 特急往弘前", d: "約 09:40 抵達；觀光服務處拿地圖" },
+    { t: "10:00 循環巴士", d: "到市役所前；舊弘前市立圖書館、青森銀行記念館" },
+    { t: "弘前公園", d: "天守改建中，園區仍可走" },
+    { t: "菊富士本店午餐", d: "津輕鄉土料理，建議訂位" },
+    { t: "最勝院五重塔・禅林街", d: "約 13:00" },
+    { t: "長勝寺・藤田記念庭園", d: "大正浪漫喫茶室蘋果派" },
+    { t: "土手町逛街", d: "伴手禮" },
+    { t: "17:00 万茶ン咖啡", d: "17:35 回弘前站" },
+    { t: "18:03 特急回青森", d: "約 18:38 抵達；晚餐 鮨処あすか 新町店（建議訂位）" }
+  ],
+  "1128": [
+    { t: "飯店早餐後退房", d: "12:00 退房，時間可再跟飯店確認" },
+    { t: "善知鳥神社", d: "約 9:00，輕鬆走走" },
+    { t: "午餐：Galetteria Da Sasino", d: "A-FACTORY 2F，約 11:00；若休業改同館 OCEAN'S DINER" },
+    { t: "12:40 機場巴士", d: "約 13:15 到青森機場" },
+    { t: "15:30 起飛 BR121", d: "長榮航空，青森 → 台北（桃園）" },
+    { t: "19:00 抵達桃園", d: "晚餐在機上或回台後" }
+  ]
+};
+const dayPhotos = {"1122": [{"src": "img/day-1122-nebuta.jpg", "alt": "睡魔之家 WA・RASSE", "label": "睡魔之家 WA・RASSE", "credit": "掬茶 · CC BY-SA 4.0", "commons": "https://commons.wikimedia.org/wiki/File%3ANebuta_Museum_Wa_Rasse_20200621.jpg"}], "1123": [{"src": "img/day-1123-museum.jpg", "alt": "青森縣立美術館", "label": "青森縣立美術館", "credit": "663highland · CC BY 2.5", "commons": "https://commons.wikimedia.org/wiki/File%3A140913_Aomori_Museum_of_Art_Japan02bs3.jpg"}, {"src": "img/day-1123-sannai.jpg", "alt": "三內丸山遺跡", "label": "三內丸山遺跡", "credit": "663highland · CC BY 2.5", "commons": "https://commons.wikimedia.org/wiki/File%3A140913_Sannai-Maruyama_site_Aomori_Japan01bs6bs6.jpg"}], "1124": [{"src": "img/day-1124-kumoi.jpg", "alt": "雲井之瀧", "label": "雲井之瀧", "credit": "Daderot · CC0", "commons": "https://commons.wikimedia.org/wiki/File%3AKumoi_Falls_-_Oirase_Mountain_Stream_-_Towada%2C_Aomori_-_DSC01198.jpg"}, {"src": "img/day-1124-ashura.jpg", "alt": "阿修羅之流", "label": "阿修羅之流", "credit": "Wikimedia Commons · CC BY-SA 3.0", "commons": "https://commons.wikimedia.org/wiki/File%3A%E9%98%BF%E4%BF%AE%E7%BE%85%E3%81%AE%E6%B5%81%E3%82%8C.jpg"}, {"src": "img/day-1124-stream.jpg", "alt": "溪流散策", "label": "溪流散策", "credit": "OKJaguar · CC BY-SA 4.0", "commons": "https://commons.wikimedia.org/wiki/File%3AOirase_Stream%2C_Towada-Hachimantai_National_Park%2C_Japan.jpg"}], "1125": [{"src": "img/day-1125-furukawa.jpg", "alt": "古川市場", "label": "古川市場", "credit": "z tanuki · CC BY 3.0", "commons": "https://commons.wikimedia.org/wiki/File%3AFurukawa_market_%2C_%E5%8F%A4%E5%B7%9D%E5%B8%82%E5%A0%B4_%E9%9D%92%E6%A3%AE%E9%AD%9A%E8%8F%9C%E3%82%BB%E3%83%B3%E3%82%BF%E3%83%BC_-_Panoramio_107351554.jpg"}, {"src": "img/day-1125-hakkodamaru.jpg", "alt": "八甲田丸", "label": "八甲田丸", "credit": "掬茶 · CC BY-SA 4.0", "commons": "https://commons.wikimedia.org/wiki/File%3AHakkoda_Maru_moored_at_the_port_of_Aomori_20200621a.jpg"}, {"src": "img/day-1125-afactory.jpg", "alt": "A-FACTORY", "label": "A-FACTORY", "credit": "掬茶 · CC BY-SA 4.0", "commons": "https://commons.wikimedia.org/wiki/File%3AA-Factory_20200621.jpg"}], "1126": [{"src": "img/day-1126-ropeway.jpg", "alt": "八甲田纜車", "label": "八甲田纜車", "credit": "Marho · CC BY-SA 4.0", "commons": "https://commons.wikimedia.org/wiki/File%3AHakkoda_Ropeway_2019.jpg"}, {"src": "img/day-1126-asamushi.jpg", "alt": "淺虫水族館", "label": "淺虫水族館", "credit": "Drivephotographer · CC0", "commons": "https://commons.wikimedia.org/wiki/File%3AAsamushi_Aquarium-2.jpg"}], "1127": [{"src": "img/day-1127-hirosaki.jpg", "alt": "弘前公園", "label": "弘前公園", "credit": "Wikimedia Commons · CC BY-SA 3.0", "commons": "https://commons.wikimedia.org/wiki/File%3AHirosaki_castle_park_-_panoramio.jpg"}, {"src": "img/day-1127-saishoin.jpg", "alt": "最勝院五重塔", "label": "最勝院五重塔", "credit": "Wikimedia Commons · CC BY-SA 3.0", "commons": "https://commons.wikimedia.org/wiki/File%3AHirosaki_Saishoin_Pagoda.JPG"}, {"src": "img/day-1127-fujita.jpg", "alt": "藤田記念庭園", "label": "藤田記念庭園", "credit": "Wikimedia Commons · CC BY 3.0", "commons": "https://commons.wikimedia.org/wiki/File%3AFujita_Memorial_Japanese_Garden_-_panoramio.jpg"}], "1128": [{"src": "img/day-1128-utou.jpg", "alt": "善知鳥神社", "label": "善知鳥神社", "credit": "Higa4 · CC0", "commons": "https://commons.wikimedia.org/wiki/File%3AUtou-jinja04.jpg"}]};
+const order = ["1122","1123","1124","1125","1126","1127","1128"];
+const labels = { "1122":"11/22","1123":"11/23","1124":"11/24","1125":"11/25","1126":"11/26","1127":"11/27","1128":"11/28" };
+
+function render(day) {
+  const meta = dayMeta[day];
+  document.getElementById("dayMeta").textContent = meta.title + "　｜　住宿：" + meta.stay;
+  const gal = document.getElementById("dayGallery");
+  gal.innerHTML = dayPhotos[day].map(p =>
+    `<figure>
+      <img src="${p.src}" alt="${p.alt}" loading="lazy" />
+      <figcaption>${p.label}<br><a href="${p.commons}" target="_blank" rel="noopener">${p.credit}</a></figcaption>
+    </figure>`
+  ).join("");
+  const ol = document.getElementById("daySteps");
+  ol.innerHTML = daySteps[day].map(s =>
+    `<li><div class="t">${s.t}</div><div class="d">${s.d || ""}</div></li>`
+  ).join("");
+  document.querySelectorAll("#dayTabs button").forEach(b => {
+    b.setAttribute("aria-selected", b.dataset.day === day ? "true" : "false");
+  });
+}
+
+const tabs = document.getElementById("dayTabs");
+order.forEach(d => {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.textContent = labels[d];
+  b.dataset.day = d;
+  b.setAttribute("role", "tab");
+  b.addEventListener("click", () => render(d));
+  tabs.appendChild(b);
+});
+render("1122");
+</script>
+</body>
+</html>
