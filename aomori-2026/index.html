@@ -349,6 +349,65 @@
   .spot-modal .modal-credit {
     margin-top: 12px; font-size: .75rem; color: var(--muted);
   }
+
+  .day-extra { margin-top: 8px; }
+  .backup {
+    margin-top: 18px;
+    padding: 14px 14px 16px;
+    background: var(--warn-bg);
+    border: 1px solid #ecd7a8;
+    border-radius: 12px;
+  }
+  .backup > h3 {
+    margin: 0 0 6px;
+    font-size: 1.05rem;
+    color: var(--warn);
+  }
+  .backup .cap { margin: 0 0 12px; color: #4a350c; }
+  .backup .backup-flow {
+    margin: 0 0 10px;
+    font-size: .92rem;
+  }
+  ol.backup-steps {
+    margin: 0; padding: 0; list-style: none; counter-reset: bstep;
+  }
+  ol.backup-steps li {
+    position: relative;
+    padding: 0 0 14px 36px;
+    border-left: 2px solid #ecd7a8;
+    margin-left: 12px;
+  }
+  ol.backup-steps li:last-child { border-left-color: transparent; padding-bottom: 0; }
+  ol.backup-steps li::before {
+    counter-increment: bstep;
+    content: counter(bstep);
+    position: absolute; left: -12px; top: 0;
+    width: 22px; height: 22px;
+    background: var(--warn); color: #fff;
+    border-radius: 50%;
+    font-size: .72rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  ol.backup-steps .t { font-weight: 650; color: #4a350c; }
+  ol.backup-steps .d { color: #5c4a28; font-size: .9rem; }
+  .backup .notes {
+    margin: 12px 0 0;
+    padding: 10px 12px;
+    background: rgba(255,255,255,.55);
+    border-radius: 8px;
+    font-size: .88rem;
+    color: #4a350c;
+  }
+  .backup .notes p { margin: 0 0 8px; }
+  .backup .notes p:last-child { margin-bottom: 0; }
+  .step-link { font-weight: 650; }
+  .fee-backup {
+    margin-top: 12px; padding: 12px 14px;
+    background: var(--warn-bg); border-radius: 10px;
+    color: #4a350c; font-size: .9rem;
+  }
+  .fee-backup strong { color: var(--warn); }
+
   @media (min-width: 640px) {
     .hero img { height: 340px; }
     .lodge { grid-template-columns: 160px 1fr; }
@@ -456,6 +515,7 @@
     <p class="day-meta" id="dayMeta"></p>
     <div class="gallery" id="dayGallery"></div>
     <ol class="steps" id="daySteps"></ol>
+    <div class="day-extra" id="dayExtra"></div>
   </section>
 
   <section id="meals">
@@ -476,13 +536,13 @@
       </table>
     </div>
     <p style="margin:12px 0 0;color:var(--muted);font-size:.9rem">
-      11/23 為日本勤勞感謝日，店家可能較忙；11/26 午餐僅約一小時緩衝，排隊就改買車站外帶。
+      11/23 為日本勤勞感謝日，店家可能較忙；11/26 主行程下午較寬鬆，午餐後可回飯店休息或在車站周邊散步。若改走八戶備案，午餐改在八食中心、晚餐改在みろく横丁（當天不再去サイゼリヤ與じょっぱり）。
     </p>
   </section>
 
   <section id="fees">
     <h2>門票與交通費用</h2>
-    <p class="cap">單人估算（日幣・大人票）。查證日：2026/11/9，以官方網站為準，實際價格可能變動。不含機票、住宿、餐食（のっけ丼另註）。</p>
+    <p class="cap">單人估算（日幣・大人票），以主行程為準。查證日：2026/11/9；11/26 費用與八戶備案於 2026/11/15 更新。以官方網站為準，實際價格可能變動。不含機票、住宿、餐食（のっけ丼另註）。</p>
     <div style="overflow-x:auto">
       <table class="fees">
         <thead><tr><th>項目</th><th>日期</th><th>單人票價</th><th>備註</th></tr></thead>
@@ -498,8 +558,6 @@
           <tr><td>ASPAM</td><td>11/25</td><td class="price">館內免費</td><td>13F展望台另計大人¥500（可選）</td></tr>
           <tr><td>はっこうだ號 青森駅↔纜車站前</td><td>11/26</td><td class="price">¥1,290／趟</td><td>JRバス東北；去程青森駅發需網預約，預約料¥300／席（運費另付）</td></tr>
           <tr><td>八甲田纜車</td><td>11/26</td><td class="price">往復 ¥2,500</td><td>片道¥1,550；強風停駛可能。冬季最終約15:40</td></tr>
-          <tr><td>青い森鐵道 青森↔淺虫溫泉</td><td>11/26</td><td class="price">¥540／趟</td><td>來回各一趟</td></tr>
-          <tr><td>淺虫水族館</td><td>11/26</td><td class="price">¥1,200</td><td>最終海豚秀開始10分後入館可減至¥800</td></tr>
           <tr><td>JR特急つがる 青森↔弘前（自由席）</td><td>11/27</td><td class="price">¥1,240／趟</td><td>含乗車券¥720＋自由席特急¥520；普通車僅運費約¥720（較慢）</td></tr>
           <tr><td>弘前循環巴士（土手町循環）</td><td>11/27</td><td class="price">一日券 ¥600</td><td>單次現金¥200／IC¥180（2026/10起）；一日券可多次</td></tr>
           <tr><td>弘前公園・本丸</td><td>11/27</td><td class="price">免費</td><td>11/24–翌3/31 本丸免費；天守內部休館中</td></tr>
@@ -514,9 +572,15 @@
       </table>
     </div>
     <div class="fee-total">
-      <strong>單人門票＋交通估算合計：約 ¥22,930</strong>
+      <strong>單人門票＋交通估算合計：約 ¥20,650</strong>
       <div style="margin-top:6px;color:var(--muted);font-size:.9rem">
-        含機場巴士來回、星野青森接送來回、美術館／三內（含折價）、八甲田巴士＋預約＋纜車、淺虫鐵道與水族館、弘前特急自由席來回與循環一日券、銀行記念館等。不含のっけ丼、ASPAM展望台、藤田洋館（待確認）。兩人合計約 ¥45,860。
+        含機場巴士來回、星野青森接送來回、美術館／三內（含折價）、八甲田巴士＋預約＋纜車、弘前特急自由席來回與循環一日券、銀行記念館等。不含のっけ丼、ASPAM展望台、藤田洋館（待確認）。兩人合計約 ¥41,300。
+      </div>
+    </div>
+    <div class="fee-backup">
+      <strong>備案：八戶一日遊交通（不計入上方合計）</strong>
+      <div style="margin-top:6px">
+        單人大約 ¥9,500–10,000：青森↔新青森來回 ¥400，新幹線指定席來回約 ¥8,000（單程約 ¥4,000，2026/11 駅探查證；全車指定席），加上八食 150 円巴士與 JR 八戸線等約 ¥1,000–1,500。七厘村利用料大人另計 ¥500，餐食另計。若改搭はやて，特急料金可能略低（待確認）。
       </div>
     </div>
     <p style="margin:12px 0 0;color:var(--muted);font-size:.88rem">
@@ -536,8 +600,8 @@
         <p>對外巴士冬季停駛，只能坐星野住客溪流接駁。從三亂之流回飯店末班約 15:42。</p>
       </div>
       <div class="tip">
-        <h3>11/26 はっこうだ號</h3>
-        <p>需向 JR バス東北預約座位；八甲田纜車遇強風可能停駛。</p>
+        <h3>11/26 八甲田與備案</h3>
+        <p>出門前先上<a href="https://www.hakkoda-ropeway.jp/" target="_blank" rel="noopener">八甲田纜車官網</a>確認是否行駛。はっこうだ號需向 JR バス東北預約座位；若纜車停駛，改走當日頁的「備案：八戶一日遊」。</p>
       </div>
       <div class="tip">
         <h3>11/27 弘前</h3>
@@ -713,22 +777,11 @@ const spots = {
     ticket: "往復大人 ¥2,500（片道 ¥1,550）",
     points: [
       "從纜車站搭ロープウェー上八甲田山頂，冬季可見樹冰景觀。",
-      "往復大人 ¥2,500；遇強風可能停駛，當天要預留備案。",
+      "往復大人 ¥2,500；遇強風可能停駛，出門前上官網確認，停駛則改走八戶備案。",
       "冬季運行約 9:00 起、上山最終約 15:40。",
       "去程はっこうだ號需網預約（運費 ¥1,290＋預約料 ¥300／席）。"
     ],
     photo: { src: "img/day-1126-ropeway.jpg", alt: "八甲田纜車", credit: "Marho · CC BY-SA 4.0", commons: "https://commons.wikimedia.org/wiki/File%3AHakkoda_Ropeway_2019.jpg" }
-  },
-  asamushi: {
-    name: "淺虫水族館",
-    ticket: "大人 ¥1,200",
-    points: [
-      "青森近郊海濱水族館，有海豚秀等表演。",
-      "大人票 ¥1,200；最終海豚秀開始 10 分後入館可減至 ¥800。",
-      "行程安排約 15:30 海豚秀；之後可到附近海邊看夕陽。",
-      "從青森搭青い森鐵道約 30 分，片道約 ¥540。"
-    ],
-    photo: { src: "img/day-1126-asamushi.jpg", alt: "淺虫水族館", credit: "Drivephotographer · CC0", commons: "https://commons.wikimedia.org/wiki/File%3AAsamushi_Aquarium-2.jpg" }
   },
   oldLibrary: {
     name: "舊弘前市立圖書館",
@@ -817,7 +870,51 @@ const spots = {
       "11 月清晨偏冷，外套要穿夠。"
     ],
     photo: { src: "img/day-1128-utou.jpg", alt: "善知鳥神社", credit: "Higa4 · CC0", commons: "https://commons.wikimedia.org/wiki/File%3AUtou-jinja04.jpg" }
-  }
+  },
+  hasshoku: {
+    name: "八食中心",
+    ticket: "入場免費；七厘村利用料大人 ¥500",
+    points: [
+      "八戶大型海鮮市場，約 60 家店販售新鮮魚貝、肉類與土產。",
+      "可在館內「七厘村」把剛買的食材自己炭烤；請先到受付付利用料再購物，大人 ¥500、最長 2 小時（延長不可），受付 9:00–17:00。",
+      "11/26（四）市場棟・味横丁 9:00–18:00、厨スタジアム 9:00–21:00；每週三市場棟／味横丁休，當天有開。",
+      "從八戸駅東口搭「八食 150 円巴士」約 12 分、¥150（平日與假日同時刻）。"
+    ],
+    photo: { src: "img/spot-hasshoku.jpg", alt: "八食中心外觀", credit: "Wakkubox · CC BY-SA 3.0", commons: "https://commons.wikimedia.org/wiki/File%3AHassyokuCenter_Ichiba-North.jpg" }
+  },
+  kabushima: {
+    name: "蕪島（蕪嶋神社）",
+    ticket: "參拜免費",
+    points: [
+      "種差海岸北端的小島（已與陸地相連），是黑尾鷗（ウミネコ）繁殖地，屬國家天然紀念物。",
+      "島上的蕪嶋神社相傳有「人氣與運勢上漲」的由來；冬季參拜時間 8:30–16:50（10–3 月）。",
+      "11 月底鷗鳥繁殖季已過，仍可走訪神社與海景；當日日落約 16:10，請把握白天。",
+      "JR 八戸線在鮫駅下車後步行約 15 分。遊覽巴士「うみねこ號」11/9 起僅土日祝運行，11/26（四）停駛。"
+    ],
+    photo: { src: "img/spot-kabushima.jpg", alt: "蕪嶋神社鳥居與海邊", credit: "七厩拓 · CC BY-SA 4.0", commons: "https://commons.wikimedia.org/wiki/File%3AKabushima_Shrine_2024-09-14.jpg" }
+  },
+  tanesashi: {
+    name: "種差海岸",
+    ticket: "海岸散策免費",
+    points: [
+      "三陸復興國立公園內的海岸，以緊鄰太平洋的天然芝生地與岩岸步道聞名。",
+      "散策免費；種差海岸資訊中心 4–11 月 9:00–17:00，入館免費（年末年始休）。",
+      "JR 八戸線在種差海岸駅下車後步行約 3 分；八戸駅出發約 ¥350，班次比到鮫駅少，先查時刻。",
+      "11/26 日落約 16:10，加上當日うみねこ號停駛，午餐後請盡早搭 JR 前往。"
+    ],
+    photo: { src: "img/spot-tanesashi.jpg", alt: "種差海岸天然芝生地", credit: "kudoutakahiro · CC BY-SA 3.0", commons: "https://commons.wikimedia.org/wiki/File%3ATanesashi%27s_turf.jpg" }
+  },
+  miroku: {
+    name: "みろく横丁",
+    ticket: "逛逛免費；餐飲另計",
+    points: [
+      "八戶中心街的屋台村，名稱來自連接三日町與六日町；約 26 間小型屋台。",
+      "各店營業時間與公休不同，多數約 17:00 開始，可逛到較晚；出發前可再看官網。",
+      "本八戸駅南口步行約 10 分，或從八戸駅東口搭往中心街的巴士（約 10 分間隔、片道 ¥370）。",
+      "適合晚餐時段連逛幾間屋台；吃完再搭新幹線經新青森回青森駅。"
+    ],
+    photo: { src: "img/spot-miroku.jpg", alt: "みろく横丁入口", credit: "七厩拓 · CC BY-SA 4.0", commons: "https://commons.wikimedia.org/wiki/File%3AMiroku_Yokocho_2024-09-14_1.jpg" }
+  },
 };
 
 const dayMeta = {
@@ -825,7 +922,7 @@ const dayMeta = {
   "1123": { title: "美術館・前往星野", stay: "星野リゾート 奥入瀬渓流ホテル" },
   "1124": { title: "奧入瀨溪流", stay: "星野リゾート 奥入瀬渓流ホテル" },
   "1125": { title: "回市區・逛街", stay: "青森大和 ROYNET 飯店" },
-  "1126": { title: "八甲田山・淺虫", stay: "青森大和 ROYNET 飯店" },
+  "1126": { title: "八甲田山", stay: "青森大和 ROYNET 飯店" },
   "1127": { title: "弘前一日遊", stay: "青森大和 ROYNET 飯店" },
   "1128": { title: "返台", stay: "當日退房" }
 };
@@ -870,14 +967,14 @@ const daySteps = {
     { t: "晚餐：鱒の介", d: "津輕家常菜與海鮮，建議訂位" }
   ],
   "1126": [
+    { t: "出發前先看纜車營運", d: "當天早上出門前，先上八甲田纜車官網確認是否行駛。遇強風常會臨時停駛；若停駛，改走下方「備案：八戶一日遊」。", href: "https://www.hakkoda-ropeway.jp/", linkLabel: "八甲田纜車官網" },
     { t: "飯店早餐", d: "約 7:00" },
     { t: "08:10 はっこうだ號", d: "青森駅→纜車站前 ¥1,290；需網預約＋預約料 ¥300／席（JRバス東北）" },
     { t: "09:10 抵達・纜車", d: "往復大人 ¥2,500；強風可能停駛", spots: ["ropeway"] },
     { t: "11:08 回青森", d: "纜車站前→青森駅 ¥1,290；約 12:03 抵站（回程免預約）" },
-    { t: "午餐：サイゼリヤ", d: "＆LOVINA 店，快速用餐後接 13:08 火車" },
-    { t: "13:08–13:39 往淺虫", d: "青い森鐵道　片道 ¥540" },
-    { t: "淺虫水族館", d: "大人 ¥1,200；15:30 海豚秀；之後海邊看夕陽", spots: ["asamushi"] },
-    { t: "17:35–18:00 回青森", d: "鐵道片道 ¥540；晚餐：津軽じょっぱり漁屋酒場（三味線約 19:00，建議訂位）" }
+    { t: "午餐：サイゼリヤ", d: "＆LOVINA 店；下午不必趕車，可慢慢吃" },
+    { t: "回飯店休息或站前散步", d: "下午可回大和 ROYNET 休息，或在青森車站、＆LOVINA 一帶走走，不必另排付費景點" },
+    { t: "晚餐：津軽じょっぱり漁屋酒場", d: "三味線約 19:00，建議訂位" }
   ],
   "1127": [
     { t: "09:04 特急往弘前", d: "特急つがる自由席合計 ¥1,240（運費 ¥720＋特急 ¥520）；約 09:40 抵達" },
@@ -900,10 +997,28 @@ const daySteps = {
   ]
 };
 
-const dayPhotos = {"1122": [{"src": "img/day-1122-nebuta.jpg", "alt": "睡魔之家 WA・RASSE", "label": "睡魔之家 WA・RASSE", "credit": "掬茶 · CC BY-SA 4.0", "commons": "https://commons.wikimedia.org/wiki/File%3ANebuta_Museum_Wa_Rasse_20200621.jpg"}], "1123": [{"src": "img/day-1123-museum.jpg", "alt": "青森縣立美術館", "label": "青森縣立美術館", "credit": "663highland · CC BY 2.5", "commons": "https://commons.wikimedia.org/wiki/File%3A140913_Aomori_Museum_of_Art_Japan02bs3.jpg"}, {"src": "img/day-1123-sannai.jpg", "alt": "三內丸山遺跡", "label": "三內丸山遺跡", "credit": "663highland · CC BY 2.5", "commons": "https://commons.wikimedia.org/wiki/File%3A140913_Sannai-Maruyama_site_Aomori_Japan01bs6bs6.jpg"}], "1124": [{"src": "img/day-1124-kumoi.jpg", "alt": "雲井之瀧", "label": "雲井之瀧", "credit": "Daderot · CC0", "commons": "https://commons.wikimedia.org/wiki/File%3AKumoi_Falls_-_Oirase_Mountain_Stream_-_Towada%2C_Aomori_-_DSC01198.jpg"}, {"src": "img/day-1124-ashura.jpg", "alt": "阿修羅之流", "label": "阿修羅之流", "credit": "Wikimedia Commons · CC BY-SA 3.0", "commons": "https://commons.wikimedia.org/wiki/File%3A%E9%98%BF%E4%BF%AE%E7%BE%85%E3%81%AE%E6%B5%81%E3%82%8C.jpg"}, {"src": "img/day-1124-stream.jpg", "alt": "溪流散策", "label": "溪流散策", "credit": "OKJaguar · CC BY-SA 4.0", "commons": "https://commons.wikimedia.org/wiki/File%3AOirase_Stream%2C_Towada-Hachimantai_National_Park%2C_Japan.jpg"}], "1125": [{"src": "img/day-1125-furukawa.jpg", "alt": "古川市場", "label": "古川市場", "credit": "z tanuki · CC BY 3.0", "commons": "https://commons.wikimedia.org/wiki/File%3AFurukawa_market_%2C_%E5%8F%A4%E5%B7%9D%E5%B8%82%E5%A0%B4_%E9%9D%92%E6%A3%AE%E9%AD%9A%E8%8F%9C%E3%82%BB%E3%83%B3%E3%82%BF%E3%83%BC_-_Panoramio_107351554.jpg"}, {"src": "img/day-1125-hakkodamaru.jpg", "alt": "八甲田丸", "label": "八甲田丸", "credit": "掬茶 · CC BY-SA 4.0", "commons": "https://commons.wikimedia.org/wiki/File%3AHakkoda_Maru_moored_at_the_port_of_Aomori_20200621a.jpg"}, {"src": "img/day-1125-afactory.jpg", "alt": "A-FACTORY", "label": "A-FACTORY", "credit": "掬茶 · CC BY-SA 4.0", "commons": "https://commons.wikimedia.org/wiki/File%3AA-Factory_20200621.jpg"}], "1126": [{"src": "img/day-1126-ropeway.jpg", "alt": "八甲田纜車", "label": "八甲田纜車", "credit": "Marho · CC BY-SA 4.0", "commons": "https://commons.wikimedia.org/wiki/File%3AHakkoda_Ropeway_2019.jpg"}, {"src": "img/day-1126-asamushi.jpg", "alt": "淺虫水族館", "label": "淺虫水族館", "credit": "Drivephotographer · CC0", "commons": "https://commons.wikimedia.org/wiki/File%3AAsamushi_Aquarium-2.jpg"}], "1127": [{"src": "img/day-1127-hirosaki.jpg", "alt": "弘前公園", "label": "弘前公園", "credit": "Wikimedia Commons · CC BY-SA 3.0", "commons": "https://commons.wikimedia.org/wiki/File%3AHirosaki_castle_park_-_panoramio.jpg"}, {"src": "img/day-1127-saishoin.jpg", "alt": "最勝院五重塔", "label": "最勝院五重塔", "credit": "Wikimedia Commons · CC BY-SA 3.0", "commons": "https://commons.wikimedia.org/wiki/File%3AHirosaki_Saishoin_Pagoda.JPG"}, {"src": "img/day-1127-fujita.jpg", "alt": "藤田記念庭園", "label": "藤田記念庭園", "credit": "Wikimedia Commons · CC BY 3.0", "commons": "https://commons.wikimedia.org/wiki/File%3AFujita_Memorial_Japanese_Garden_-_panoramio.jpg"}], "1128": [{"src": "img/day-1128-utou.jpg", "alt": "善知鳥神社", "label": "善知鳥神社", "credit": "Higa4 · CC0", "commons": "https://commons.wikimedia.org/wiki/File%3AUtou-jinja04.jpg"}]};
+const dayPhotos = {"1122": [{"src": "img/day-1122-nebuta.jpg", "alt": "睡魔之家 WA・RASSE", "label": "睡魔之家 WA・RASSE", "credit": "掬茶 · CC BY-SA 4.0", "commons": "https://commons.wikimedia.org/wiki/File%3ANebuta_Museum_Wa_Rasse_20200621.jpg"}], "1123": [{"src": "img/day-1123-museum.jpg", "alt": "青森縣立美術館", "label": "青森縣立美術館", "credit": "663highland · CC BY 2.5", "commons": "https://commons.wikimedia.org/wiki/File%3A140913_Aomori_Museum_of_Art_Japan02bs3.jpg"}, {"src": "img/day-1123-sannai.jpg", "alt": "三內丸山遺跡", "label": "三內丸山遺跡", "credit": "663highland · CC BY 2.5", "commons": "https://commons.wikimedia.org/wiki/File%3A140913_Sannai-Maruyama_site_Aomori_Japan01bs6bs6.jpg"}], "1124": [{"src": "img/day-1124-kumoi.jpg", "alt": "雲井之瀧", "label": "雲井之瀧", "credit": "Daderot · CC0", "commons": "https://commons.wikimedia.org/wiki/File%3AKumoi_Falls_-_Oirase_Mountain_Stream_-_Towada%2C_Aomori_-_DSC01198.jpg"}, {"src": "img/day-1124-ashura.jpg", "alt": "阿修羅之流", "label": "阿修羅之流", "credit": "Wikimedia Commons · CC BY-SA 3.0", "commons": "https://commons.wikimedia.org/wiki/File%3A%E9%98%BF%E4%BF%AE%E7%BE%85%E3%81%AE%E6%B5%81%E3%82%8C.jpg"}, {"src": "img/day-1124-stream.jpg", "alt": "溪流散策", "label": "溪流散策", "credit": "OKJaguar · CC BY-SA 4.0", "commons": "https://commons.wikimedia.org/wiki/File%3AOirase_Stream%2C_Towada-Hachimantai_National_Park%2C_Japan.jpg"}], "1125": [{"src": "img/day-1125-furukawa.jpg", "alt": "古川市場", "label": "古川市場", "credit": "z tanuki · CC BY 3.0", "commons": "https://commons.wikimedia.org/wiki/File%3AFurukawa_market_%2C_%E5%8F%A4%E5%B7%9D%E5%B8%82%E5%A0%B4_%E9%9D%92%E6%A3%AE%E9%AD%9A%E8%8F%9C%E3%82%BB%E3%83%B3%E3%82%BF%E3%83%BC_-_Panoramio_107351554.jpg"}, {"src": "img/day-1125-hakkodamaru.jpg", "alt": "八甲田丸", "label": "八甲田丸", "credit": "掬茶 · CC BY-SA 4.0", "commons": "https://commons.wikimedia.org/wiki/File%3AHakkoda_Maru_moored_at_the_port_of_Aomori_20200621a.jpg"}, {"src": "img/day-1125-afactory.jpg", "alt": "A-FACTORY", "label": "A-FACTORY", "credit": "掬茶 · CC BY-SA 4.0", "commons": "https://commons.wikimedia.org/wiki/File%3AA-Factory_20200621.jpg"}], "1126": [{"src": "img/day-1126-ropeway.jpg", "alt": "八甲田纜車", "label": "八甲田纜車", "credit": "Marho · CC BY-SA 4.0", "commons": "https://commons.wikimedia.org/wiki/File%3AHakkoda_Ropeway_2019.jpg"}], "1127": [{"src": "img/day-1127-hirosaki.jpg", "alt": "弘前公園", "label": "弘前公園", "credit": "Wikimedia Commons · CC BY-SA 3.0", "commons": "https://commons.wikimedia.org/wiki/File%3AHirosaki_castle_park_-_panoramio.jpg"}, {"src": "img/day-1127-saishoin.jpg", "alt": "最勝院五重塔", "label": "最勝院五重塔", "credit": "Wikimedia Commons · CC BY-SA 3.0", "commons": "https://commons.wikimedia.org/wiki/File%3AHirosaki_Saishoin_Pagoda.JPG"}, {"src": "img/day-1127-fujita.jpg", "alt": "藤田記念庭園", "label": "藤田記念庭園", "credit": "Wikimedia Commons · CC BY 3.0", "commons": "https://commons.wikimedia.org/wiki/File%3AFujita_Memorial_Japanese_Garden_-_panoramio.jpg"}], "1128": [{"src": "img/day-1128-utou.jpg", "alt": "善知鳥神社", "label": "善知鳥神社", "credit": "Higa4 · CC0", "commons": "https://commons.wikimedia.org/wiki/File%3AUtou-jinja04.jpg"}]};
 
 const order = ["1122","1123","1124","1125","1126","1127","1128"];
 const labels = { "1122":"11/22","1123":"11/23","1124":"11/24","1125":"11/25","1126":"11/26","1127":"11/27","1128":"11/28" };
+
+const dayBackups = {
+  "1126": {
+    title: "備案：八戶一日遊",
+    intro: "八甲田纜車若因強風停駛，改走這條。11/26（四）不是星期日，館鼻岸壁朝市（僅週日清晨）不在此行程。",
+    flow: "青森駅搭奧羽本線約 5–6 分（¥200）到新青森，再搭東北新幹線到八戸駅，最快約 23 分、一般約 27 分，指定席單程約 ¥4,000（全車指定席，無自由席）。建議動線：午餐在八食中心 → 下午蕪島與種差海岸 → 晚上みろく横丁 → 新幹線經新青森回青森。",
+    steps: [
+      { t: "午餐：八食中心", d: "海鮮市場；可把剛買的食材拿到七厘村自己炭烤（利用料大人 ¥500，受付 9:00–17:00，最長 2 小時）。八戸駅東口搭「八食 150 円巴士」約 12 分、¥150。11/26 市場棟・味横丁 9:00–18:00、厨スタジアム 9:00–21:00，當天（週四）有開。", spots: ["hasshoku"] },
+      { t: "下午：蕪島、種差海岸", d: "11/26 是週四，遊覽巴士「うみねこ號」已改冬季班（11/9 起僅土日祝），當天停駛。改搭 JR 八戸線：八戸→鮫約 22 分、¥260，再走約 15 分到蕪島；種差海岸駅下車後步行約 3 分（八戸→種差約 ¥350，班次較少）。當日日落約 16:10，午餐後請盡早出發；蕪嶋神社冬季參拜至 16:50。", spots: ["kabushima", "tanesashi"] },
+      { t: "晚上：みろく横丁，再回青森", d: "八戶中心街屋台村，多數店約 17:00 開始、各店公休不同。本八戸駅南口步行約 10 分，或八戸駅東口往中心街巴士片道 ¥370。吃完搭新幹線經新青森回青森駅；夜間仍有班次，出發前請查末班。", spots: ["miroku"] }
+    ],
+    notes: [
+      "種差海岸散策免費；資訊中心 4–11 月 9:00–17:00，入館免費。",
+      "備案單人交通大約 ¥9,500–10,000（不含餐食與七厘村利用料），不計入主行程費用合計。",
+      "若改走備案，當天午餐改在八食中心、晚餐改在みろく横丁，不再去サイゼリヤ與じょっぱり（避免與其他天的餐廳重複）。"
+    ]
+  }
+};
 
 const staticCredits = [
   { href: "https://commons.wikimedia.org/wiki/File%3AOirase_Gorge_-_OiraseGorge7015.jpg", label: "奧入瀨溪流", credit: "lumoplank · CC0" },
@@ -947,20 +1062,47 @@ function render(day) {
     </figure>`
   ).join("");
   const ol = document.getElementById("daySteps");
-  ol.innerHTML = daySteps[day].map(s => {
-    let spotHtml = "";
-    if (s.spots && s.spots.length) {
-      spotHtml = `<div class="spot-links">` + s.spots.map(id => {
-        const sp = spots[id];
-        if (!sp) return "";
-        return `<button type="button" class="spot-btn" data-spot="${id}">${esc(sp.name)}</button>`;
-      }).join("") + `</div>`;
-    }
-    return `<li><div class="t">${esc(s.t)}</div><div class="d">${esc(s.d || "")}</div>${spotHtml}</li>`;
-  }).join("");
+  ol.innerHTML = daySteps[day].map(s => stepItem(s)).join("");
+  const extra = document.getElementById("dayExtra");
+  const bk = dayBackups[day];
+  if (bk) {
+    extra.innerHTML = renderBackup(bk);
+  } else {
+    extra.innerHTML = "";
+  }
   document.querySelectorAll("#dayTabs button").forEach(b => {
     b.setAttribute("aria-selected", b.dataset.day === day ? "true" : "false");
   });
+}
+
+function spotButtons(ids) {
+  if (!ids || !ids.length) return "";
+  return `<div class="spot-links">` + ids.map(id => {
+    const sp = spots[id];
+    if (!sp) return "";
+    return `<button type="button" class="spot-btn" data-spot="${id}">${esc(sp.name)}</button>`;
+  }).join("") + `</div>`;
+}
+
+function stepItem(s) {
+  let desc = esc(s.d || "");
+  if (s.href) {
+    const label = esc(s.linkLabel || s.href);
+    desc += ` <a class="step-link" href="${esc(s.href)}" target="_blank" rel="noopener">${label}</a>`;
+  }
+  return `<li><div class="t">${esc(s.t)}</div><div class="d">${desc}</div>${spotButtons(s.spots)}</li>`;
+}
+
+function renderBackup(bk) {
+  const steps = bk.steps.map(s => stepItem(s)).join("");
+  const notes = (bk.notes || []).map(n => `<p>${esc(n)}</p>`).join("");
+  return `<aside class="backup">
+    <h3>${esc(bk.title)}</h3>
+    <p class="cap">${esc(bk.intro)}</p>
+    <p class="backup-flow">${esc(bk.flow)}</p>
+    <ol class="backup-steps">${steps}</ol>
+    <div class="notes">${notes}</div>
+  </aside>`;
 }
 
 const tabs = document.getElementById("dayTabs");
@@ -1021,7 +1163,7 @@ function closeSpot() {
   if (lastFocus && typeof lastFocus.focus === "function") lastFocus.focus();
 }
 
-document.getElementById("daySteps").addEventListener("click", e => {
+document.getElementById("days").addEventListener("click", e => {
   const btn = e.target.closest("[data-spot]");
   if (!btn) return;
   openSpot(btn.dataset.spot);
